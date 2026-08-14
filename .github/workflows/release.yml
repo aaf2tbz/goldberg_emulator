@@ -22,3 +22,38 @@ jobs:
             build/libsteam_api.dylib
             build/lobby_connect
             build/generate_interfaces_file
+
+  build-windows-mingw:
+    name: Build Windows (mingw)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install mingw-w64
+        run: brew install mingw-w64
+      - name: Write toolchain file
+        run: |
+          cat > /tmp/mingw-toolchain.cmake <<'EOF'
+          set(CMAKE_SYSTEM_NAME Windows)
+          set(CMAKE_SYSTEM_PROCESSOR x86_64)
+          set(CMAKE_C_COMPILER x86_64-w64-mingw32-gcc)
+          set(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
+          set(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
+          set(CMAKE_FIND_ROOT_PATH /usr/local)
+          set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+          set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+          set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+          EOF
+      - name: CMake configure
+        run: cmake . -Bbuild-win -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/tmp/mingw-toolchain.cmake
+      - name: Build
+        run: make -Cbuild-win -j$(sysctl -n hw.ncpu) steam_api64 steamclient64 steamnetworkingsockets64
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest
+          files: |
+            build-win/libsteam_api64.dll
+            build-win/libsteamclient64.dll
+            build-win/libsteamnetworkingsockets64.dll
