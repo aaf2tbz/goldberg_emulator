@@ -1,5 +1,7 @@
-﻿name: Release
+name: Release
 on: push
+permissions:
+  contents: write
 jobs:
   build-macos:
     name: Build on macOS
@@ -11,7 +13,7 @@ jobs:
       - name: CMake configure
         run: cmake . -Bbuild -DCMAKE_BUILD_TYPE=Release
       - name: Build
-        run: make -Cbuild -j$(sysctl -n hw.ncpu) steam_api
+        run: make -Cbuild -j$(sysctl -n hw.ncpu) steam_api lobby_connect generate_interfaces_file
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
