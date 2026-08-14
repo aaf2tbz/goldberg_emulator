@@ -98,6 +98,8 @@
 #include "isteamuserstats004.h"
 #include "isteamuserstats003.h"
 #include "isteamapps.h"
+#include "isteamappticket.h"
+#include "isteamgamestats.h"
 #include "isteamapps008.h"
 #include "isteamapps007.h"
 #include "isteamapps006.h"

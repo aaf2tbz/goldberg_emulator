@@ -21,6 +21,7 @@
 // client feature; the emulator accepts all event/game-phase calls and reports
 // that no recordings exist.
 class Steam_Timeline :
+public ISteamTimeline001,
 public ISteamTimeline
 {
     class Settings *settings;
@@ -31,6 +32,22 @@ public:
     {
         this->settings = settings;
         this->callback_results = callback_results;
+    }
+
+    // ISteamTimeline001 (SDK 1.60) methods
+    void SetTimelineStateDescription( const char *pchDescription, float flTimeDelta )
+    {
+        PRINT_DEBUG("Steam_Timeline::SetTimelineStateDescription\n");
+    }
+
+    void ClearTimelineStateDescription( float flTimeDelta )
+    {
+        PRINT_DEBUG("Steam_Timeline::ClearTimelineStateDescription\n");
+    }
+
+    void AddTimelineEvent( const char *pchIcon, const char *pchTitle, const char *pchDescription, uint32 unPriority, float flStartOffsetSeconds, float flDuration, ETimelineEventClipPriority ePossibleClip )
+    {
+        PRINT_DEBUG("Steam_Timeline::AddTimelineEvent\n");
     }
 
     void SetTimelineTooltip( const char *pchDescription, float flTimeDelta )

@@ -101,6 +101,8 @@ Steam_Client::Steam_Client()
     steam_remoteplay = new Steam_RemotePlay(settings_client, network, callback_results_client, callbacks_client, run_every_runcb);
     steam_tv = new Steam_TV(settings_client, network, callback_results_client, callbacks_client, run_every_runcb);
     steam_timeline = new Steam_Timeline(settings_client, callback_results_client);
+    steam_gamestats = new Steam_GameStats(settings_client, callback_results_client);
+    steam_appticket = new Steam_AppTicket(settings_client);
 
     PRINT_DEBUG("client init gameserver\n");
     steam_gameserver = new Steam_GameServer(settings_server, network, callbacks_server);
@@ -169,6 +171,8 @@ Steam_Client::~Steam_Client()
     delete steam_remoteplay;
     delete steam_tv;
     delete steam_timeline;
+    delete steam_gamestats;
+    delete steam_appticket;
 
     delete steam_utils;
     delete steam_friends;
@@ -619,8 +623,46 @@ void *Steam_Client::GetISteamGenericInterface( HSteamUser hSteamUser, HSteamPipe
         return (void *)(ISteamGameCoordinator *)steam_game_coordinator_temp;
     } else if (strstr(pchVersion, STEAMTV_INTERFACE_VERSION) == pchVersion) {
         return (void *)(ISteamTV *)steam_tv;
+    } else if (strcmp(pchVersion, "STEAMTIMELINE_INTERFACE_V001") == 0) {
+        return (void *)(ISteamTimeline001 *)steam_timeline;
     } else if (strstr(pchVersion, STEAMTIMELINE_INTERFACE_VERSION) == pchVersion) {
         return (void *)(ISteamTimeline *)steam_timeline;
+    } else if (strstr(pchVersion, "STEAMAPPTICKET_INTERFACE_VERSION") == pchVersion) {
+        return (void *)(ISteamAppTicket *)steam_appticket;
+    } else if (strcmp(pchVersion, "SteamGameStats001") == 0) {
+        return (void *)(ISteamGameStats *)steam_gamestats;
+    } else if (strcmp(pchVersion, "SteamClient007") == 0) {
+        return (void *)(ISteamClient007 *)this;
+    } else if (strcmp(pchVersion, "SteamClient008") == 0) {
+        return (void *)(ISteamClient008 *)this;
+    } else if (strcmp(pchVersion, "SteamClient009") == 0) {
+        return (void *)(ISteamClient009 *)this;
+    } else if (strcmp(pchVersion, "SteamClient010") == 0) {
+        return (void *)(ISteamClient010 *)this;
+    } else if (strcmp(pchVersion, "SteamClient011") == 0) {
+        return (void *)(ISteamClient011 *)this;
+    } else if (strcmp(pchVersion, "SteamClient012") == 0) {
+        return (void *)(ISteamClient012 *)this;
+    } else if (strcmp(pchVersion, "SteamClient013") == 0) {
+        return (void *)(ISteamClient013 *)this;
+    } else if (strcmp(pchVersion, "SteamClient014") == 0) {
+        return (void *)(ISteamClient014 *)this;
+    } else if (strcmp(pchVersion, "SteamClient015") == 0) {
+        return (void *)(ISteamClient015 *)this;
+    } else if (strcmp(pchVersion, "SteamClient016") == 0) {
+        return (void *)(ISteamClient016 *)this;
+    } else if (strcmp(pchVersion, "SteamClient017") == 0) {
+        return (void *)(ISteamClient017 *)this;
+    } else if (strcmp(pchVersion, "SteamClient018") == 0) {
+        return (void *)(ISteamClient018 *)this;
+    } else if (strcmp(pchVersion, "SteamClient019") == 0) {
+        return (void *)(ISteamClient019 *)this;
+    } else if (strcmp(pchVersion, "SteamClient020") == 0) {
+        return (void *)(ISteamClient020 *)this;
+    } else if (strcmp(pchVersion, "SteamClient021") == 0) {
+        return (void *)(ISteamClient021 *)this;
+    } else if (strcmp(pchVersion, "SteamClient023") == 0) {
+        return (void *)(ISteamClient *)this;
     } else if (strstr(pchVersion, "SteamNetworkingUtils") == pchVersion) {
             if (strcmp(pchVersion, "SteamNetworkingUtils001") == 0) {
                 return (void *)(ISteamNetworkingUtils001 *)steam_networking_utils;

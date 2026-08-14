@@ -47,6 +47,8 @@
 #include "steam_remoteplay.h"
 #include "steam_tv.h"
 #include "steam_timeline.h"
+#include "steam_gamestats.h"
+#include "steam_appticket.h"
 
 #include "steam_gameserver.h"
 #include "steam_gameserverstats.h"
@@ -115,6 +117,8 @@ public:
     Steam_RemotePlay *steam_remoteplay;
     Steam_TV *steam_tv;
     Steam_Timeline *steam_timeline;
+    Steam_GameStats *steam_gamestats;
+    Steam_AppTicket *steam_appticket;
 
     Steam_GameServer *steam_gameserver;
     Steam_Utils *steam_gameserver_utils;
