@@ -24,7 +24,7 @@ endif()
 option(EMU_EXPERIMENTAL_BUILD "Enable experimental build" OFF)
 
 # Set CXX standard
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -44,6 +44,15 @@ if (APPLE)
 	  GIT_PROGRESS		ON
 	  OVERRIDE_FIND_PACKAGE
 	)
+	FetchContent_MakeAvailable(Protobuf)
+
+	# Pin the protobuf compiler and libraries to the freshly fetched build
+	# (otherwise FindProtobuf may pick up an incompatible system protoc).
+	set(Protobuf_PROTOC_EXECUTABLE "${protobuf_BINARY_DIR}/protoc-${protobuf_VERSION}" CACHE FILEPATH "" FORCE)
+	set(Protobuf_LIBRARY_RELEASE protobuf::libprotobuf CACHE FILEPATH "" FORCE)
+	set(Protobuf_LIBRARY_DEBUG protobuf::libprotobuf CACHE FILEPATH "" FORCE)
+	set(Protobuf_INCLUDE_DIR "${protobuf_SOURCE_DIR}/src" CACHE PATH "" FORCE)
+	set(PROTOBUF_PROTOC_EXECUTABLE "${protobuf_BINARY_DIR}/protoc-${protobuf_VERSION}")
 endif()
 
 # Find the protobuf compiler and libraries
