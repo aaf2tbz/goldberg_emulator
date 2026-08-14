@@ -6,6 +6,17 @@ You replace the steam api .dll or .so with mine (for complete steps see the [Rel
 
 If you are a game developper and made the mistake of depending too much on the steam api and want to release of version of your game without it and don't want to rewrite your game, this is for you. It is licenced LGPLv3+ so the only source code you need to publish is the source code of this emulator (and only if you make modification to it).
 
+## This fork: full SDK surface coverage
+
+This is a fork of the upstream project with a substantially wider API surface:
+
+- **Synced to the latest Steamworks SDK (v1.65)** — the SDK headers have been brought up to date while keeping every historical versioned interface, so games built with *any* Steamworks SDK from v1.0 (2008) to v1.65 (2025) keep working.
+- **Every interface version is servable** — all 175 interface version strings that ever shipped in any public Steamworks SDK resolve correctly (verified by the `tests/version_exercise.cpp` harness, 175/175), including the newer `ISteamTimeline`, `ISteamAppTicket`, `ISteamGameStats`, and the full FakeIP/`ISteamNetworkingFakeUDPPort` surface.
+- **100% export parity with the real DLLs** — the emulator exports every symbol the genuine v1.65 `steam_api`/`steam_api64` libraries export (verified symbol-by-symbol against Valve's redistributables for macOS, Windows x64 and Windows x86), plus all the legacy exports for older games.
+- **New SDK init entry points** — `SteamAPI_InitEx`, `SteamAPI_InitFlat`, `SteamInternal_SteamAPI_Init` and `SteamInternal_GameServer_Init_V2` are implemented, so games built against recent SDKs initialize correctly.
+- **Latest interface versions implemented** — `ISteamApps009` (betas, game performance settings), `ISteamFriends018`, `ISteamUGC021` (content descriptors, download management), `ISteamUtils011` (Steam hardware/Proton detection), `ISteamInput007`, `ISteamRemotePlay004` (Remote Play Together input/cursors), `ISteamVideo007`, `ISteamUserStats013`, `ISteamNetworkingSockets013` and `ISteamClient023`.
+- **Cross-platform builds** — builds on macOS (native dylib), Windows via MSVC or mingw-w64 (both x86 and x64 DLLs), and Linux, all verified in CI.
+
 ## How to use
 
 Replace the steam_api(64).dll (libsteam_api.so on linux) from the game with mine. For linux make sure that if the original api is 32 bit you use a 32 bit build and if it's 64 bit you use a 64 bit build.

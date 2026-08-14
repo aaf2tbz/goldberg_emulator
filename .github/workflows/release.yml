@@ -16,6 +16,7 @@ jobs:
         run: make -Cbuild -j$(sysctl -n hw.ncpu) steam_api lobby_connect generate_interfaces_file
       - name: Create release
         uses: softprops/action-gh-release@v1
+        continue-on-error: true
         with:
           tag_name: latest
           files: |
@@ -51,6 +52,7 @@ jobs:
         run: make -Cbuild-win -j$(sysctl -n hw.ncpu) steam_api64 steamclient64 steamnetworkingsockets64
       - name: Create release
         uses: softprops/action-gh-release@v1
+        continue-on-error: true
         with:
           tag_name: latest
           files: |
