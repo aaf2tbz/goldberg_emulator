@@ -436,8 +436,10 @@ public:
 #define STEAMFRIENDS_INTERFACE_VERSION "SteamFriends018"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
 inline ISteamFriends *SteamFriends();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamFriends *, SteamFriends, STEAMFRIENDS_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
 
 // callbacks
 #if defined( VALVE_CALLBACK_PACK_SMALL )
@@ -710,5 +712,28 @@ struct EquippedProfileItems_t
 };
 
 #pragma pack( pop )
+
+
+
+enum EUserRestriction
+{
+	k_nUserRestrictionNone		= 0,	// no known chat/content restriction
+	k_nUserRestrictionUnknown	= 1,	// we don't know yet (user offline)
+	k_nUserRestrictionAnyChat	= 2,	// user is not allowed to (or can't) send/recv any chat
+	k_nUserRestrictionVoiceChat	= 4,	// user is not allowed to (or can't) send/recv voice chat
+	k_nUserRestrictionGroupChat	= 8,	// user is not allowed to (or can't) send/recv group chat
+	k_nUserRestrictionRating	= 16,	// user is too young according to rating in current region
+	k_nUserRestrictionGameInvites	= 32,	// user cannot send or recv game invites (e.g. mobile)
+	k_nUserRestrictionTrading	= 64,	// user cannot participate in trading (console, mobile)
+};
+
+struct SetPersonaNameResponse_t
+{
+	enum { k_iCallback = k_iSteamFriendsCallbacks + 47 };
+
+	bool m_bSuccess; // true if name change succeeded completely.
+	bool m_bLocalSuccess; // true if name change was retained locally.  (We might not have been able to communicate with Steam)
+	EResult m_result; // detailed result code
+};
 
 #endif // ISTEAMFRIENDS_H

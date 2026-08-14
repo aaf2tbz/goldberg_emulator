@@ -1236,8 +1236,12 @@ public:
 #define STEAMINPUT_INTERFACE_VERSION "SteamInput007"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamInput *SteamInput();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamInput *, SteamInput, STEAMINPUT_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 #if defined( VALVE_CALLBACK_PACK_SMALL )
 #pragma pack( push, 4 )
@@ -1301,4 +1305,26 @@ struct SteamInputGamepadSlotChange_t
 
 #pragma pack( pop )
 
+
+enum EInputSource
+{
+	k_EInputSource_None,
+	k_EInputSource_LeftTrackpad,
+	k_EInputSource_RightTrackpad,
+	k_EInputSource_Joystick,
+	k_EInputSource_ABXY,
+	k_EInputSource_Switch,
+	k_EInputSource_LeftTrigger,
+	k_EInputSource_RightTrigger,
+	k_EInputSource_LeftBumper,
+	k_EInputSource_RightBumper,
+	k_EInputSource_Gyro,
+	k_EInputSource_CenterTrackpad,		// PS4
+	k_EInputSource_RightJoystick,		// Traditional Controllers
+	k_EInputSource_DPad,				// Traditional Controllers
+	k_EInputSource_Key,                 // Keyboards with scan codes - Unused
+	k_EInputSource_Mouse,               // Traditional mouse - Unused
+	k_EInputSource_LeftGyro,			// Secondary Gyro - Switch - Unused
+	k_EInputSource_Count
+};
 #endif // ISTEAMINPUT_H

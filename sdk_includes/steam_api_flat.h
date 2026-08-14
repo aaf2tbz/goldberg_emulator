@@ -1207,7 +1207,6 @@ STEAMAPI_API const char * SteamAPI_SteamNetworkingIPAddrRender_c_str( SteamNetwo
 STEAMAPI_API void SteamAPI_SteamDatagramHostedAddress_Clear( SteamDatagramHostedAddress* self );
 STEAMAPI_API SteamNetworkingPOPID SteamAPI_SteamDatagramHostedAddress_GetPopID( SteamDatagramHostedAddress* self );
 STEAMAPI_API void SteamAPI_SteamDatagramHostedAddress_SetDevAddress( SteamDatagramHostedAddress* self, uint32 nIP, uint16 nPort, SteamNetworkingPOPID popid );
-#endif // STEAMAPIFLAT_H
 
 STEAMAPI_API bool SteamAPI_ISteamApps_GetBetaInfo( ISteamApps* self, int iBetaIndex, uint32 * punFlags, uint32 * punBuildID, char * pchBetaName, int cchBetaName, char * pchDescription, int cchDescription, uint32 * punLastUpdated );
 STEAMAPI_API int SteamAPI_ISteamApps_GetNumBetas( ISteamApps* self, int * pnAvailable, int * pnPrivate );

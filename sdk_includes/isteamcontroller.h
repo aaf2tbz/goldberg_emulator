@@ -1016,7 +1016,11 @@ public:
 #define STEAMCONTROLLER_INTERFACE_VERSION "SteamController008"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamController *SteamController();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamController *, SteamController, STEAMCONTROLLER_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 #endif // ISTEAMCONTROLLER_H

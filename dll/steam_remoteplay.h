@@ -134,4 +134,92 @@ void Callback(Common_Message *msg)
     }
 }
 
+
+// True if this session is being played remotely together
+bool BSessionRemotePlayTogether( RemotePlaySessionID_t unSessionID )
+{
+    PRINT_DEBUG("BSessionRemotePlayTogether %u\n", unSessionID);
+    return false;
+}
+
+// GuestID of the guest in this session
+uint32 GetSessionGuestID( RemotePlaySessionID_t unSessionID )
+{
+    PRINT_DEBUG("GetSessionGuestID %u\n", unSessionID);
+    return 0;
+}
+
+// Small avatar of the guest in this session
+int GetSmallSessionAvatar( RemotePlaySessionID_t unSessionID )
+{
+    PRINT_DEBUG("GetSmallSessionAvatar %u\n", unSessionID);
+    return 0;
+}
+
+// Medium avatar of the guest in this session
+int GetMediumSessionAvatar( RemotePlaySessionID_t unSessionID )
+{
+    PRINT_DEBUG("GetMediumSessionAvatar %u\n", unSessionID);
+    return 0;
+}
+
+// Large avatar of the guest in this session
+int GetLargeSessionAvatar( RemotePlaySessionID_t unSessionID )
+{
+    PRINT_DEBUG("GetLargeSessionAvatar %u\n", unSessionID);
+    return 0;
+}
+
+// Show the Remote Play Together UI
+bool ShowRemotePlayTogetherUI()
+{
+    PRINT_DEBUG("ShowRemotePlayTogetherUI\n");
+    return false;
+}
+
+// Enable Direct Input for Remote Play Together sessions
+bool BEnableRemotePlayTogetherDirectInput()
+{
+    PRINT_DEBUG("BEnableRemotePlayTogetherDirectInput\n");
+    return true;
+}
+
+// Disable Direct Input for Remote Play Together sessions
+void DisableRemotePlayTogetherDirectInput()
+{
+    PRINT_DEBUG("DisableRemotePlayTogetherDirectInput\n");
+}
+
+// Get the input events from the Remote Play Together session
+uint32 GetInput( RemotePlayInput_t *pInput, uint32 unMaxEvents )
+{
+    PRINT_DEBUG("GetInput %u\n", unMaxEvents);
+    return 0;
+}
+
+// Set the visibility of the mouse cursor
+void SetMouseVisibility( RemotePlaySessionID_t unSessionID, bool bVisible )
+{
+    PRINT_DEBUG("SetMouseVisibility %u %u\n", unSessionID, bVisible);
+}
+
+// Set the position of the mouse cursor (normalized 0..1)
+void SetMousePosition( RemotePlaySessionID_t unSessionID, float flNormalizedX, float flNormalizedY )
+{
+    PRINT_DEBUG("SetMousePosition %u %f %f\n", unSessionID, flNormalizedX, flNormalizedY);
+}
+
+// Create a mouse cursor for use in Remote Play Together sessions
+RemotePlayCursorID_t CreateMouseCursor( int nWidth, int nHeight, int nHotX, int nHotY, const void *pBGRA, int nPitch )
+{
+    PRINT_DEBUG("CreateMouseCursor %i %i %i %i %i\n", nWidth, nHeight, nHotX, nHotY, nPitch);
+    return 0;
+}
+
+// Set the mouse cursor for this session
+void SetMouseCursor( RemotePlaySessionID_t unSessionID, RemotePlayCursorID_t unCursorID )
+{
+    PRINT_DEBUG("SetMouseCursor %u %llu\n", unSessionID, (unsigned long long)unCursorID);
+}
+
 };

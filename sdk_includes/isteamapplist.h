@@ -34,8 +34,12 @@ public:
 
 #ifndef STEAM_API_EXPORTS
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamAppList *SteamAppList();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamAppList *, SteamAppList, STEAMAPPLIST_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 #endif
 // callbacks
 #if defined( VALVE_CALLBACK_PACK_SMALL )

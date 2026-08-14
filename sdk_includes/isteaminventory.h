@@ -360,12 +360,20 @@ public:
 #define STEAMINVENTORY_INTERFACE_VERSION "STEAMINVENTORY_INTERFACE_V003"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamInventory *SteamInventory();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamInventory *, SteamInventory, STEAMINVENTORY_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 // Global accessor for the gameserver client
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamInventory *SteamGameServerInventory();
 STEAM_DEFINE_GAMESERVER_INTERFACE_ACCESSOR( ISteamInventory *, SteamGameServerInventory, STEAMINVENTORY_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 // SteamInventoryResultReady_t callbacks are fired whenever asynchronous
 // results transition from "Pending" to "OK" or an error state. There will

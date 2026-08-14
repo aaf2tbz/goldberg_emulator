@@ -19,6 +19,7 @@
 #define STEAM_API_FUNCTIONS_IMPL
 #include "dll.h"
 #include "../sdk_includes/steam_api_flat.h"
+#include "../sdk_includes/steamnetworkingfakeip.h"
 
 STEAMAPI_API HSteamPipe SteamAPI_ISteamClient_CreateSteamPipe( ISteamClient* self )
 {
@@ -7144,3 +7145,352 @@ STEAMAPI_API void SteamAPI_SteamDatagramHostedAddress_SetDevAddress( SteamDatagr
 }
 
 #endif
+
+STEAMAPI_API ISteamApps *SteamAPI_SteamApps_v009()
+{
+    return get_steam_client()->GetISteamApps(flat_hsteamuser(), flat_hsteampipe(), "STEAMAPPS_INTERFACE_VERSION009");
+}
+
+STEAMAPI_API ISteamFriends *SteamAPI_SteamFriends_v018()
+{
+    return get_steam_client()->GetISteamFriends(flat_hsteamuser(), flat_hsteampipe(), "SteamFriends018");
+}
+
+STEAMAPI_API ISteamInput *SteamAPI_SteamInput_v007()
+{
+    return get_steam_client()->GetISteamInput(flat_hsteamuser(), flat_hsteampipe(), "SteamInput007");
+}
+
+STEAMAPI_API ISteamMatchmakingServers *SteamAPI_SteamMatchmakingServers_v003()
+{
+    return get_steam_client()->GetISteamMatchmakingServers(flat_hsteamuser(), flat_hsteampipe(), "SteamMatchMakingServers003");
+}
+
+STEAMAPI_API ISteamRemotePlay *SteamAPI_SteamRemotePlay_v004()
+{
+    return get_steam_client()->GetISteamRemotePlay(flat_hsteamuser(), flat_hsteampipe(), "STEAMREMOTEPLAY_INTERFACE_VERSION004");
+}
+
+STEAMAPI_API ISteamTimeline *SteamAPI_SteamTimeline_v004()
+{
+    return get_steam_client()->steam_timeline;
+}
+
+STEAMAPI_API ISteamUGC *SteamAPI_SteamUGC_v021()
+{
+    return get_steam_client()->GetISteamUGC(flat_hsteamuser(), flat_hsteampipe(), "STEAMUGC_INTERFACE_VERSION021");
+}
+
+STEAMAPI_API ISteamUGC *SteamAPI_SteamGameServerUGC_v021()
+{
+    return get_steam_client()->GetISteamUGC(flat_gs_hsteamuser(), flat_gs_hsteampipe(), "STEAMUGC_INTERFACE_VERSION021");
+}
+
+STEAMAPI_API ISteamUserStats *SteamAPI_SteamUserStats_v013()
+{
+    return get_steam_client()->GetISteamUserStats(flat_hsteamuser(), flat_hsteampipe(), "STEAMUSERSTATS_INTERFACE_VERSION013");
+}
+
+STEAMAPI_API ISteamUtils *SteamAPI_SteamUtils_v011()
+{
+    return get_steam_client()->GetISteamUtils(flat_hsteampipe(), "SteamUtils011");
+}
+
+STEAMAPI_API ISteamUtils *SteamAPI_SteamGameServerUtils_v011()
+{
+    return get_steam_client()->GetISteamUtils(flat_gs_hsteampipe(), "SteamUtils011");
+}
+
+STEAMAPI_API ISteamVideo *SteamAPI_SteamVideo_v007()
+{
+    return get_steam_client()->GetISteamVideo(flat_hsteamuser(), flat_hsteampipe(), "STEAMVIDEO_INTERFACE_V007");
+}
+
+STEAMAPI_API ISteamNetworkingSockets *SteamAPI_SteamNetworkingSockets_SteamAPI_v013()
+{
+    return (ISteamNetworkingSockets *)get_steam_client()->GetISteamGenericInterface(flat_hsteamuser(), flat_hsteampipe(), "SteamNetworkingSockets013");
+}
+
+STEAMAPI_API ISteamNetworkingSockets *SteamAPI_SteamGameServerNetworkingSockets_SteamAPI_v013()
+{
+    return (ISteamNetworkingSockets *)get_steam_client()->GetISteamGenericInterface(flat_gs_hsteamuser(), flat_gs_hsteampipe(), "SteamNetworkingSockets013");
+}
+
+STEAMAPI_API bool SteamAPI_gameserveritem_t_IsEqualTo( gameserveritem_t* self, const gameserveritem_t & rhs )
+{
+    return self->operator==(rhs);
+}
+
+STEAMAPI_API bool SteamAPI_servernetadr_t_IsEqualTo( servernetadr_t* self, const servernetadr_t & rhs )
+{
+    return self->operator==(rhs);
+}
+STEAMAPI_API bool SteamAPI_ISteamApps_GetBetaInfo( ISteamApps* self, int iBetaIndex, uint32 * punFlags, uint32 * punBuildID, char * pchBetaName, int cchBetaName, char * pchDescription, int cchDescription, uint32 * punLastUpdated )
+{
+    return self->GetBetaInfo(iBetaIndex, punFlags, punBuildID, pchBetaName, cchBetaName, pchDescription, cchDescription, punLastUpdated);
+}
+
+STEAMAPI_API int SteamAPI_ISteamApps_GetNumBetas( ISteamApps* self, int * pnAvailable, int * pnPrivate )
+{
+    return self->GetNumBetas(pnAvailable, pnPrivate);
+}
+
+STEAMAPI_API bool SteamAPI_ISteamApps_SetActiveBeta( ISteamApps* self, const char * pchBetaName )
+{
+    return self->SetActiveBeta(pchBetaName);
+}
+
+STEAMAPI_API void SteamAPI_ISteamApps_SetGamePerformanceSetting( ISteamApps* self, EGamePerformanceSetting setting )
+{
+    self->SetGamePerformanceSetting(setting);
+}
+
+STEAMAPI_API void SteamAPI_ISteamApps_SetGameRenderResolution( ISteamApps* self, uint32 unWidth, uint32 unHeight )
+{
+    self->SetGameRenderResolution(unWidth, unHeight);
+}
+
+STEAMAPI_API void SteamAPI_ISteamMatchmakingServerFriendsResponse_AddFriendToList( ISteamMatchmakingServerFriendsResponse* self, uint64_steamid steamID, const char * pchName, bool bCurrentlyConnected )
+{
+    self->AddFriendToList(steamID, pchName, bCurrentlyConnected);
+}
+
+STEAMAPI_API void SteamAPI_ISteamMatchmakingServerFriendsResponse_FriendsFailedToRespond( ISteamMatchmakingServerFriendsResponse* self )
+{
+    self->FriendsFailedToRespond();
+}
+
+STEAMAPI_API void SteamAPI_ISteamMatchmakingServerFriendsResponse_FriendsRefreshComplete( ISteamMatchmakingServerFriendsResponse* self )
+{
+    self->FriendsRefreshComplete();
+}
+
+STEAMAPI_API HServerQuery SteamAPI_ISteamMatchmakingServers_ServerFriends( ISteamMatchmakingServers* self, uint32 unIP, uint16 usPort, ISteamMatchmakingServerFriendsResponse * pRequestServersResponse )
+{
+    return self->ServerFriends(unIP, usPort, pRequestServersResponse);
+}
+
+STEAMAPI_API bool SteamAPI_ISteamRemotePlay_BEnableRemotePlayTogetherDirectInput( ISteamRemotePlay* self )
+{
+    return self->BEnableRemotePlayTogetherDirectInput();
+}
+
+STEAMAPI_API bool SteamAPI_ISteamRemotePlay_BSessionRemotePlayTogether( ISteamRemotePlay* self, RemotePlaySessionID_t unSessionID )
+{
+    return self->BSessionRemotePlayTogether(unSessionID);
+}
+
+STEAMAPI_API RemotePlayCursorID_t SteamAPI_ISteamRemotePlay_CreateMouseCursor( ISteamRemotePlay* self, int nWidth, int nHeight, int nHotX, int nHotY, const void * pBGRA, int nPitch )
+{
+    return self->CreateMouseCursor(nWidth, nHeight, nHotX, nHotY, pBGRA, nPitch);
+}
+
+STEAMAPI_API void SteamAPI_ISteamRemotePlay_DisableRemotePlayTogetherDirectInput( ISteamRemotePlay* self )
+{
+    self->DisableRemotePlayTogetherDirectInput();
+}
+
+STEAMAPI_API uint32 SteamAPI_ISteamRemotePlay_GetInput( ISteamRemotePlay* self, RemotePlayInput_t * pInput, uint32 unMaxEvents )
+{
+    return self->GetInput(pInput, unMaxEvents);
+}
+
+STEAMAPI_API int SteamAPI_ISteamRemotePlay_GetLargeSessionAvatar( ISteamRemotePlay* self, RemotePlaySessionID_t unSessionID )
+{
+    return self->GetLargeSessionAvatar(unSessionID);
+}
+
+STEAMAPI_API int SteamAPI_ISteamRemotePlay_GetMediumSessionAvatar( ISteamRemotePlay* self, RemotePlaySessionID_t unSessionID )
+{
+    return self->GetMediumSessionAvatar(unSessionID);
+}
+
+STEAMAPI_API uint32 SteamAPI_ISteamRemotePlay_GetSessionGuestID( ISteamRemotePlay* self, RemotePlaySessionID_t unSessionID )
+{
+    return self->GetSessionGuestID(unSessionID);
+}
+
+STEAMAPI_API int SteamAPI_ISteamRemotePlay_GetSmallSessionAvatar( ISteamRemotePlay* self, RemotePlaySessionID_t unSessionID )
+{
+    return self->GetSmallSessionAvatar(unSessionID);
+}
+
+STEAMAPI_API void SteamAPI_ISteamRemotePlay_SetMouseCursor( ISteamRemotePlay* self, RemotePlaySessionID_t unSessionID, RemotePlayCursorID_t unCursorID )
+{
+    self->SetMouseCursor(unSessionID, unCursorID);
+}
+
+STEAMAPI_API void SteamAPI_ISteamRemotePlay_SetMousePosition( ISteamRemotePlay* self, RemotePlaySessionID_t unSessionID, float flNormalizedX, float flNormalizedY )
+{
+    self->SetMousePosition(unSessionID, flNormalizedX, flNormalizedY);
+}
+
+STEAMAPI_API void SteamAPI_ISteamRemotePlay_SetMouseVisibility( ISteamRemotePlay* self, RemotePlaySessionID_t unSessionID, bool bVisible )
+{
+    self->SetMouseVisibility(unSessionID, bVisible);
+}
+
+STEAMAPI_API bool SteamAPI_ISteamRemotePlay_ShowRemotePlayTogetherUI( ISteamRemotePlay* self )
+{
+    return self->ShowRemotePlayTogetherUI();
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_AddGamePhaseTag( ISteamTimeline* self, const char * pchTagName, const char * pchTagIcon, const char * pchTagGroup, uint32 unPriority )
+{
+    get_steam_client()->steam_timeline->AddGamePhaseTag(pchTagName, pchTagIcon, pchTagGroup, unPriority);
+}
+
+STEAMAPI_API TimelineEventHandle_t SteamAPI_ISteamTimeline_AddInstantaneousTimelineEvent( ISteamTimeline* self, const char * pchTitle, const char * pchDescription, const char * pchIcon, uint32 unIconPriority, float flStartOffsetSeconds, ETimelineEventClipPriority ePossibleClip )
+{
+    return get_steam_client()->steam_timeline->AddInstantaneousTimelineEvent(pchTitle, pchDescription, pchIcon, unIconPriority, flStartOffsetSeconds, ePossibleClip);
+}
+
+STEAMAPI_API TimelineEventHandle_t SteamAPI_ISteamTimeline_AddRangeTimelineEvent( ISteamTimeline* self, const char * pchTitle, const char * pchDescription, const char * pchIcon, uint32 unIconPriority, float flStartOffsetSeconds, float flDuration, ETimelineEventClipPriority ePossibleClip )
+{
+    return get_steam_client()->steam_timeline->AddRangeTimelineEvent(pchTitle, pchDescription, pchIcon, unIconPriority, flStartOffsetSeconds, flDuration, ePossibleClip);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_ClearTimelineTooltip( ISteamTimeline* self, float flTimeDelta )
+{
+    get_steam_client()->steam_timeline->ClearTimelineTooltip(flTimeDelta);
+}
+
+STEAMAPI_API SteamAPICall_t SteamAPI_ISteamTimeline_DoesEventRecordingExist( ISteamTimeline* self, TimelineEventHandle_t ulEvent )
+{
+    return get_steam_client()->steam_timeline->DoesEventRecordingExist(ulEvent);
+}
+
+STEAMAPI_API SteamAPICall_t SteamAPI_ISteamTimeline_DoesGamePhaseRecordingExist( ISteamTimeline* self, const char * pchPhaseID )
+{
+    return get_steam_client()->steam_timeline->DoesGamePhaseRecordingExist(pchPhaseID);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_EndGamePhase( ISteamTimeline* self )
+{
+    get_steam_client()->steam_timeline->EndGamePhase();
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_EndRangeTimelineEvent( ISteamTimeline* self, TimelineEventHandle_t ulEvent, float flEndOffsetSeconds )
+{
+    get_steam_client()->steam_timeline->EndRangeTimelineEvent(ulEvent, flEndOffsetSeconds);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_OpenOverlayToGamePhase( ISteamTimeline* self, const char * pchPhaseID )
+{
+    get_steam_client()->steam_timeline->OpenOverlayToGamePhase(pchPhaseID);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_OpenOverlayToTimelineEvent( ISteamTimeline* self, const TimelineEventHandle_t ulEvent )
+{
+    get_steam_client()->steam_timeline->OpenOverlayToTimelineEvent(ulEvent);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_RemoveTimelineEvent( ISteamTimeline* self, TimelineEventHandle_t ulEvent )
+{
+    get_steam_client()->steam_timeline->RemoveTimelineEvent(ulEvent);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_SetGamePhaseAttribute( ISteamTimeline* self, const char * pchAttributeGroup, const char * pchAttributeValue, uint32 unPriority )
+{
+    get_steam_client()->steam_timeline->SetGamePhaseAttribute(pchAttributeGroup, pchAttributeValue, unPriority);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_SetGamePhaseID( ISteamTimeline* self, const char * pchPhaseID )
+{
+    get_steam_client()->steam_timeline->SetGamePhaseID(pchPhaseID);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_SetTimelineGameMode( ISteamTimeline* self, ETimelineGameMode eMode )
+{
+    get_steam_client()->steam_timeline->SetTimelineGameMode(eMode);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_SetTimelineTooltip( ISteamTimeline* self, const char * pchDescription, float flTimeDelta )
+{
+    get_steam_client()->steam_timeline->SetTimelineTooltip(pchDescription, flTimeDelta);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_StartGamePhase( ISteamTimeline* self )
+{
+    get_steam_client()->steam_timeline->StartGamePhase();
+}
+
+STEAMAPI_API TimelineEventHandle_t SteamAPI_ISteamTimeline_StartRangeTimelineEvent( ISteamTimeline* self, const char * pchTitle, const char * pchDescription, const char * pchIcon, uint32 unPriority, float flStartOffsetSeconds, ETimelineEventClipPriority ePossibleClip )
+{
+    return get_steam_client()->steam_timeline->StartRangeTimelineEvent(pchTitle, pchDescription, pchIcon, unPriority, flStartOffsetSeconds, ePossibleClip);
+}
+
+STEAMAPI_API void SteamAPI_ISteamTimeline_UpdateRangeTimelineEvent( ISteamTimeline* self, TimelineEventHandle_t ulEvent, const char * pchTitle, const char * pchDescription, const char * pchIcon, uint32 unPriority, ETimelineEventClipPriority ePossibleClip )
+{
+    get_steam_client()->steam_timeline->UpdateRangeTimelineEvent(ulEvent, pchTitle, pchDescription, pchIcon, unPriority, ePossibleClip);
+}
+
+STEAMAPI_API uint32 SteamAPI_ISteamUGC_GetDownloadedItems( ISteamUGC* self, PublishedFileId_t * pvecPublishedFileIDs, uint32 cMaxEntries )
+{
+    return self->GetDownloadedItems(pvecPublishedFileIDs, cMaxEntries);
+}
+
+STEAMAPI_API uint32 SteamAPI_ISteamUGC_GetNumDownloadedItems( ISteamUGC* self )
+{
+    return self->GetNumDownloadedItems();
+}
+
+STEAMAPI_API uint32 SteamAPI_ISteamUGC_GetNumSupportedGameVersions( ISteamUGC* self, UGCQueryHandle_t handle, uint32 index )
+{
+    return self->GetNumSupportedGameVersions(handle, index);
+}
+
+STEAMAPI_API bool SteamAPI_ISteamUGC_GetSupportedGameVersionData( ISteamUGC* self, UGCQueryHandle_t handle, uint32 index, uint32 versionIndex, char * pchGameBranchMin, char * pchGameBranchMax, uint32 cchGameBranchSize )
+{
+    return self->GetSupportedGameVersionData(handle, index, versionIndex, pchGameBranchMin, pchGameBranchMax, cchGameBranchSize);
+}
+
+STEAMAPI_API uint32 SteamAPI_ISteamUGC_GetUserContentDescriptorPreferences( ISteamUGC* self, EUGCContentDescriptorID * pvecDescriptors, uint32 cMaxEntries )
+{
+    return self->GetUserContentDescriptorPreferences(pvecDescriptors, cMaxEntries);
+}
+
+STEAMAPI_API bool SteamAPI_ISteamUGC_MarkDownloadedItemAsUnused( ISteamUGC* self, PublishedFileId_t nPublishedFileID )
+{
+    return self->MarkDownloadedItemAsUnused(nPublishedFileID);
+}
+
+STEAMAPI_API bool SteamAPI_ISteamUGC_SetAdminQuery( ISteamUGC* self, UGCUpdateHandle_t handle, bool bAdminQuery )
+{
+    return self->SetAdminQuery(handle, bAdminQuery);
+}
+
+STEAMAPI_API bool SteamAPI_ISteamUGC_SetItemsDisabledLocally( ISteamUGC* self, PublishedFileId_t * pvecPublishedFileIDs, uint32 unNumPublishedFileIDs, bool bDisabledLocally )
+{
+    return self->SetItemsDisabledLocally(pvecPublishedFileIDs, unNumPublishedFileIDs, bDisabledLocally);
+}
+
+STEAMAPI_API bool SteamAPI_ISteamUGC_SetRequiredGameVersions( ISteamUGC* self, UGCUpdateHandle_t handle, const char * pszGameBranchMin, const char * pszGameBranchMax )
+{
+    return self->SetRequiredGameVersions(handle, pszGameBranchMin, pszGameBranchMax);
+}
+
+STEAMAPI_API bool SteamAPI_ISteamUGC_SetSubscriptionsLoadOrder( ISteamUGC* self, PublishedFileId_t * pvecPublishedFileIDs, uint32 unNumPublishedFileIDs )
+{
+    return self->SetSubscriptionsLoadOrder(pvecPublishedFileIDs, unNumPublishedFileIDs);
+}
+
+STEAMAPI_API bool SteamAPI_ISteamUtils_DismissGamepadTextInput( ISteamUtils* self )
+{
+    return self->DismissGamepadTextInput();
+}
+
+STEAMAPI_API ESteamHardwareDefaultConfig SteamAPI_ISteamUtils_GetSteamHardwareDefaultConfig( ISteamUtils* self )
+{
+    return self->GetSteamHardwareDefaultConfig();
+}
+
+STEAMAPI_API ESteamHardwareType SteamAPI_ISteamUtils_IsRunningOnSteamHardware( ISteamUtils* self )
+{
+    return self->IsRunningOnSteamHardware();
+}
+
+STEAMAPI_API bool SteamAPI_ISteamUtils_IsRunningUnderProton( ISteamUtils* self )
+{
+    return self->IsRunningUnderProton();
+}

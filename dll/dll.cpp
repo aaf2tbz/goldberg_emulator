@@ -196,6 +196,10 @@ static void *create_client_interface(const char *ver)
             steam_client = (ISteamClient018 *)get_steam_client();
         } else if (strcmp(ver, "SteamClient019") == 0) {
             steam_client = (ISteamClient019 *)get_steam_client();
+        } else if (strcmp(ver, "SteamClient020") == 0) {
+            steam_client = (ISteamClient020 *)get_steam_client();
+        } else if (strcmp(ver, "SteamClient021") == 0) {
+            steam_client = (ISteamClient021 *)get_steam_client();
         } else if (strcmp(ver, STEAMCLIENT_INTERFACE_VERSION) == 0) {
             steam_client = (ISteamClient *)get_steam_client();
             steamclient_has_ipv6_functions_flag = true;
@@ -1216,4 +1220,41 @@ STEAMCLIENT_API void Steam_SetLocalIPBinding( uint32 unIP, uint16 usLocalPort )
 STEAMCLIENT_API void Steam_TerminateGameConnection( HSteamUser hUser, HSteamPipe hSteamPipe, uint32 unIPServer, uint16 usPortServer )
 {
     PRINT_DEBUG("%s\n", __FUNCTION__);
+}
+
+// The destructor is declared but not defined in the SDK headers. The emulator
+// instantiates and destroys ISteamNetworkingSockets implementations, so the
+// base destructor must have a definition.
+ISteamNetworkingSockets::~ISteamNetworkingSockets() {}
+
+// v1.65-style init functions. The real client uses these to check that every
+// ISteam* interface version compiled into the game is supported; the emulator
+// supports everything, so no version string verification is performed.
+
+STEAMAPI_API ESteamAPIInitResult S_CALLTYPE SteamInternal_SteamAPI_Init( const char *pszInternalCheckInterfaceVersions, SteamErrMsg *pOutErrMsg )
+{
+    PRINT_DEBUG("SteamInternal_SteamAPI_Init %s\n", pszInternalCheckInterfaceVersions ? pszInternalCheckInterfaceVersions : "");
+    if (!SteamAPI_Init()) {
+        if (pOutErrMsg) strncpy((*pOutErrMsg), "Failed to initialize Steam emulator", sizeof(SteamErrMsg) - 1);
+        return k_ESteamAPIInitResult_FailedGeneric;
+    }
+    if (pOutErrMsg) (*pOutErrMsg)[0] = 0;
+    return k_ESteamAPIInitResult_OK;
+}
+
+STEAMAPI_API ESteamAPIInitResult S_CALLTYPE SteamAPI_InitFlat( SteamErrMsg *pOutErrMsg )
+{
+    PRINT_DEBUG("SteamAPI_InitFlat\n");
+    return SteamInternal_SteamAPI_Init(NULL, pOutErrMsg);
+}
+
+STEAMAPI_API ESteamAPIInitResult S_CALLTYPE SteamInternal_GameServer_Init_V2( uint32 unIP, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString, const char *pszInternalCheckInterfaceVersions, SteamErrMsg *pOutErrMsg )
+{
+    PRINT_DEBUG("SteamInternal_GameServer_Init_V2 %u %hu %hu %u %s\n", unIP, usGamePort, usQueryPort, eServerMode, pchVersionString ? pchVersionString : "");
+    if (!SteamInternal_GameServer_Init(unIP, 0, usGamePort, usQueryPort, eServerMode, pchVersionString)) {
+        if (pOutErrMsg) strncpy((*pOutErrMsg), "Failed to initialize game server emulator", sizeof(SteamErrMsg) - 1);
+        return k_ESteamAPIInitResult_FailedGeneric;
+    }
+    if (pOutErrMsg) (*pOutErrMsg)[0] = 0;
+    return k_ESteamAPIInitResult_OK;
 }

@@ -1936,4 +1936,20 @@ inline void SteamNetworkingMessage_t::Release() { (*m_pfnRelease)( this ); }
 
 #endif // #ifndef API_GEN
 
+
+
+// ===== Compatibility declarations for legacy signaling interface names =====
+class ISteamNetworkingConnectionCustomSignaling;
+class ISteamNetworkingCustomSignalingRecvContext;
+struct SteamNetAuthenticationStatus_t;
+struct SteamNetworkingFakeIPResult_t;
+
+
+// ===== Compatibility alias removed from newer SDK headers =====
+#define SteamNetworkingQuickConnectionStatus SteamNetConnectionRealTimeStatus_t
+
+
+// ===== Compatibility alias for renamed enum value =====
+#define k_EP2PSessionErrorDestinationNotLoggedIn k_EP2PSessionErrorDestinationNotLoggedIn_DELETED
+
 #endif // #ifndef STEAMNETWORKINGTYPES

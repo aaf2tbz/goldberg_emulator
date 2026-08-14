@@ -209,8 +209,12 @@ public:
 #define STEAMHTMLSURFACE_INTERFACE_VERSION "STEAMHTMLSURFACE_INTERFACE_VERSION_005"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamHTMLSurface *SteamHTMLSurface();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamHTMLSurface *, SteamHTMLSurface, STEAMHTMLSURFACE_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 // callbacks
 #if defined( VALVE_CALLBACK_PACK_SMALL )
@@ -477,5 +481,13 @@ STEAM_CALLBACK_END(2)
 
 #pragma pack( pop )
 
+
+
+// ===== Compatibility: global alias for the nested mouse button enum =====
+
+// ===== Compatibility: global alias for the nested mouse button enum =====
+typedef ISteamHTMLSurface::EHTMLMouseButton EHTMLMouseButton;
+typedef ISteamHTMLSurface::EHTMLKeyModifiers EHTMLKeyModifiers;
+typedef ISteamHTMLSurface::EHTMLMouseCursor EHTMLMouseCursor;
 
 #endif // ISTEAMHTMLSURFACE_H

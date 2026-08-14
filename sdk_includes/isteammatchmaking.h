@@ -253,8 +253,12 @@ public:
 #define STEAMMATCHMAKING_INTERFACE_VERSION "SteamMatchMaking009"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamMatchmaking *SteamMatchmaking();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamMatchmaking *, SteamMatchmaking, STEAMMATCHMAKING_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 //-----------------------------------------------------------------------------
 // Callback interfaces for server list functions (see ISteamMatchmakingServers below)
@@ -552,8 +556,12 @@ public:
 #define STEAMMATCHMAKINGSERVERS_INTERFACE_VERSION "SteamMatchMakingServers003"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamMatchmakingServers *SteamMatchmakingServers();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamMatchmakingServers *, SteamMatchmakingServers, STEAMMATCHMAKINGSERVERS_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 // game server flags
 const uint32 k_unFavoriteFlagNone			= 0x00;
@@ -672,8 +680,12 @@ public:
 #define STEAMPARTIES_INTERFACE_VERSION "SteamParties002"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamParties *SteamParties();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamParties *, SteamParties, STEAMPARTIES_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 
 //-----------------------------------------------------------------------------
@@ -914,10 +926,29 @@ struct ActiveBeaconsUpdated_t
 };
 
 
-#pragma pack( pop )
+enum EGameSearchErrorCode_t
+{
+	k_EGameSearchErrorCode_OK = 1,
+	k_EGameSearchErrorCode_Failed_Search_Already_In_Progress = 2,
+	k_EGameSearchErrorCode_Failed_No_Search_In_Progress = 3,
+	k_EGameSearchErrorCode_Failed_Not_Lobby_Leader = 4, // if not the lobby leader can not call SearchForGameWithLobby
+	k_EGameSearchErrorCode_Failed_No_Host_Available = 5, // no host is available that matches those search params
+	k_EGameSearchErrorCode_Failed_Search_Params_Invalid = 6, // search params are invalid
+	k_EGameSearchErrorCode_Failed_Offline = 7, // offline, could not communicate with server
+	k_EGameSearchErrorCode_Failed_NotAuthorized = 8, // either the user or the application does not have priveledges to do this
+	k_EGameSearchErrorCode_Failed_Unknown_Error = 9, // unknown error
+};
+
+enum EPlayerResult_t
+{
+	k_EPlayerResultFailedToConnect = 1, // failed to connect after confirming
+	k_EPlayerResultAbandoned = 2,		// quit game without completing it
+	k_EPlayerResultKicked = 3,			// kicked by other players/moderator/server rules
+	k_EPlayerResultIncomplete = 4,		// player stayed to end but game did not conclude successfully ( nofault to player )
+	k_EPlayerResultCompleted = 5,		// player completed game
+};
 
 
-#endif // ISTEAMMATCHMAKING
 
 class ISteamGameSearch
 {
@@ -982,3 +1013,156 @@ public:
 	virtual EGameSearchErrorCode_t EndGame( uint64 ullUniqueGameID ) = 0;
 
 };
+
+// used by now obsolete RequestFriendsLobbiesResponse_t
+// enum { k_iCallback = k_iSteamMatchmakingCallbacks + 14 };
+//-----------------------------------------------------------------------------
+// Purpose: Response to a RequestFriendsLobbies() call
+//			One of these callbacks will be received per friend who is in a lobby
+//			if no friends are in a lobby, then one of these will be called with 0 values
+//-----------------------------------------------------------------------------
+struct RequestFriendsLobbiesResponse_t
+{
+	enum { k_iCallback = k_iSteamMatchmakingCallbacks + 14 };
+	
+	uint64 m_ulSteamIDFriend;	// friend who is in a lobby; 0 if no friends in lobbies are found
+	uint64 m_ulSteamIDLobby;	// lobby that the friend is in; 0 if no friends in lobbies are found
+
+	int m_cResultIndex;			// result #, [1, m_cResultsTotal] if any are found; 0 if no friends in lobbies are found
+	int m_cResultsTotal;		// total number of results; 0 if no friends in lobbies are found
+};
+
+//-----------------------------------------------------------------------------
+// Purpose: Result of CheckForPSNGameBootInvite
+//			m_eResult == k_EResultOK on success
+//			at this point, the local user may not have finishing joining this lobby;
+//			game code should wait until the subsequent LobbyEnter_t callback is received
+//-----------------------------------------------------------------------------
+struct PSNGameBootInviteResult_t
+{
+	enum { k_iCallback = k_iSteamMatchmakingCallbacks + 15 };
+
+	bool m_bGameBootInviteExists;
+	CSteamID m_steamIDLobby;		// Should be valid if m_bGameBootInviteExists == true
+};
+
+
+//-----------------------------------------------------------------------------
+// Purpose: Result of our request to create a Lobby
+//			m_eResult == k_EResultOK on success
+//			at this point, the lobby has been joined and is ready for use
+//			a LobbyEnter_t callback will also be received (since the local user is joining their own lobby)
+//-----------------------------------------------------------------------------
+struct SearchForGameProgressCallback_t
+{
+	enum { k_iCallback = k_iSteamGameSearchCallbacks + 1 };
+
+	uint64  m_ullSearchID;	// all future callbacks referencing this search will include this Search ID
+
+	EResult m_eResult; // if search has started this result will be k_EResultOK, any other value indicates search has failed to start or has terminated
+	CSteamID m_lobbyID; // lobby ID if lobby search, invalid steamID otherwise
+	CSteamID m_steamIDEndedSearch; // if search was terminated, steamID that terminated search
+
+	int32	m_nSecondsRemainingEstimate;
+	int32	m_cPlayersSearching;
+};
+
+// notification to all players searching that a game has been found
+struct SearchForGameResultCallback_t
+{
+	enum { k_iCallback = k_iSteamGameSearchCallbacks + 2 };
+
+	uint64  m_ullSearchID;
+
+	EResult m_eResult; // if game/host was lost this will be an error value
+
+	// if m_bGameFound is true the following are non-zero
+	int32 m_nCountPlayersInGame;
+	int32 m_nCountAcceptedGame;
+	// if m_steamIDHost is valid the host has started the game
+	CSteamID m_steamIDHost;
+	bool m_bFinalCallback;
+};
+
+
+//-----------------------------------------------------------------------------
+// ISteamGameSearch : Game Host API callbacks
+
+// callback from RequestPlayersForGame when the matchmaking service has started or ended search
+// callback will also follow a call from CancelRequestPlayersForGame - m_bSearchInProgress will be false
+struct RequestPlayersForGameProgressCallback_t
+{
+	enum { k_iCallback = k_iSteamGameSearchCallbacks + 11 };
+
+	EResult m_eResult;		// m_ullSearchID will be non-zero if this is k_EResultOK
+	uint64  m_ullSearchID; 	// all future callbacks referencing this search will include this Search ID
+};
+
+// callback from RequestPlayersForGame
+// one of these will be sent per player 
+// followed by additional callbacks when players accept or decline the game
+struct RequestPlayersForGameResultCallback_t
+{
+	enum { k_iCallback = k_iSteamGameSearchCallbacks + 12 };
+
+	EResult m_eResult;		// m_ullSearchID will be non-zero if this is k_EResultOK
+	uint64  m_ullSearchID;
+
+	CSteamID m_SteamIDPlayerFound; // player steamID
+	CSteamID m_SteamIDLobby;	// if the player is in a lobby, the lobby ID
+	enum PlayerAcceptState_t
+	{
+		k_EStateUnknown = 0,
+		k_EStatePlayerAccepted = 1,
+		k_EStatePlayerDeclined = 2,
+	};
+	PlayerAcceptState_t m_ePlayerAcceptState;
+	int32 m_nPlayerIndex;
+	int32 m_nTotalPlayersFound;		// expect this many callbacks at minimum
+	int32 m_nTotalPlayersAcceptedGame;
+	int32 m_nSuggestedTeamIndex;
+	uint64 m_ullUniqueGameID;
+};
+
+
+struct RequestPlayersForGameFinalResultCallback_t
+{
+	enum { k_iCallback = k_iSteamGameSearchCallbacks + 13 };
+
+	EResult m_eResult;
+	uint64  m_ullSearchID;
+	uint64 m_ullUniqueGameID;
+};
+
+
+
+// this callback confirms that results were received by the matchmaking service for this player
+struct SubmitPlayerResultResultCallback_t
+{
+	enum { k_iCallback = k_iSteamGameSearchCallbacks + 14 };
+
+	EResult m_eResult;
+	uint64 ullUniqueGameID;
+	CSteamID steamIDPlayer;
+};
+
+
+// this callback confirms that the game is recorded as complete on the matchmaking service
+// the next call to RequestPlayersForGame will generate a new unique game ID
+struct EndGameResultCallback_t
+{
+	enum { k_iCallback = k_iSteamGameSearchCallbacks + 15 };
+
+	EResult m_eResult;
+	uint64 ullUniqueGameID;
+};
+
+
+// Steam has responded to the user request to join a party via the given Beacon ID.
+// If successful, the connect string contains game-specific instructions to connect
+// to the game with that party.
+
+#pragma pack( pop )
+
+
+#endif // ISTEAMMATCHMAKING

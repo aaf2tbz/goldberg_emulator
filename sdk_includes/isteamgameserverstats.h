@@ -63,8 +63,12 @@ public:
 #define STEAMGAMESERVERSTATS_INTERFACE_VERSION "SteamGameServerStats001"
 
 // Global accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamGameServerStats *SteamGameServerStats();
 STEAM_DEFINE_GAMESERVER_INTERFACE_ACCESSOR( ISteamGameServerStats *, SteamGameServerStats, STEAMGAMESERVERSTATS_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 
 // callbacks

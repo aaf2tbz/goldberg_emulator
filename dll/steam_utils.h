@@ -441,4 +441,33 @@ bool DismissFloatingGamepadTextInput()
     return true;
 }
 
+
+// Dismiss the on-screen keyboard that was displayed by a call to ShowGamepadTextInput
+bool DismissGamepadTextInput()
+{
+    PRINT_DEBUG("DismissGamepadTextInput\n");
+    return true;
+}
+
+// True if currently running on a Steam Deck/Steam Machine/Steam Frame
+ESteamHardwareType IsRunningOnSteamHardware()
+{
+    PRINT_DEBUG("IsRunningOnSteamHardware\n");
+    return k_ESteamHardwareTypeNone;
+}
+
+// If IsRunningOnSteamHardware() returns true, returns the default graphics config
+ESteamHardwareDefaultConfig GetSteamHardwareDefaultConfig()
+{
+    PRINT_DEBUG("GetSteamHardwareDefaultConfig\n");
+    return k_ESteamHardwareDefaultConfigNone;
+}
+
+// True if the current process is running under Proton
+bool IsRunningUnderProton()
+{
+    PRINT_DEBUG("IsRunningUnderProton\n");
+    return false;
+}
+
 };

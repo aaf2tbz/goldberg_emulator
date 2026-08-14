@@ -246,4 +246,11 @@ public:
 // Internal implementation details for all of the above
 #include "steam_api_internal.h"
 
+#if defined( _WIN32 )
+	#define S_API_EXPORT extern "C" __declspec( dllexport )
+#else
+	#define S_API_EXPORT extern "C" __attribute__((visibility("default")))
+#endif
+
 #endif // STEAM_API_COMMON_H
+

@@ -857,7 +857,7 @@ static void free_steam_message_data(SteamNetworkingMessage_t *pMsg)
 static void delete_steam_message(SteamNetworkingMessage_t *pMsg)
 {
     if (pMsg->m_pfnFreeData) pMsg->m_pfnFreeData(pMsg);
-    delete pMsg;
+    delete (EmuSteamNetworkingMessage *)pMsg;
 }
 
 SteamNetworkingMessage_t *get_steam_message_connection(HSteamNetConnection hConn)
@@ -865,7 +865,7 @@ SteamNetworkingMessage_t *get_steam_message_connection(HSteamNetConnection hConn
     auto connect_socket = s->connect_sockets.find(hConn);
     if (connect_socket == s->connect_sockets.end()) return NULL;
     if (connect_socket->second.data.empty()) return NULL;
-    SteamNetworkingMessage_t *pMsg = new SteamNetworkingMessage_t();
+    SteamNetworkingMessage_t *pMsg = new EmuSteamNetworkingMessage();
     unsigned long size = connect_socket->second.data.top().data().size();
     pMsg->m_pData = malloc(size);
     pMsg->m_cbSize = size;
@@ -2107,6 +2107,26 @@ void Callback(Common_Message *msg)
             }
         }
     }
+}
+
+
+// Send one or more messages. SendMessages is more efficient than SendMessageToConnection
+void SendMessages( int nMessages, SteamNetworkingMessage_t **pMessages, int64 *pOutMessageNumberOrResult, bool bDeleteFailedMessages )
+{
+    PRINT_DEBUG("Steam_Networking_Sockets::SendMessages %i\n", nMessages);
+    SendMessages(nMessages, pMessages, pOutMessageNumberOrResult);
+}
+
+HSteamNetConnection ConnectP2PCustomSignaling( ISteamNetworkingConnectionSignaling *pSignaling, const SteamNetworkingIdentity *pPeerIdentity, int nRemoteVirtualPort, int nOptions, const SteamNetworkingConfigValue_t *pOptions )
+{
+    PRINT_DEBUG("Steam_Networking_Sockets::ConnectP2PCustomSignaling new\n");
+    return ConnectP2PCustomSignaling((ISteamNetworkingConnectionCustomSignaling *)pSignaling, pPeerIdentity, nRemoteVirtualPort, nOptions, pOptions);
+}
+
+bool ReceivedP2PCustomSignal( const void *pMsg, int cbMsg, ISteamNetworkingSignalingRecvContext *pContext )
+{
+    PRINT_DEBUG("Steam_Networking_Sockets::ReceivedP2PCustomSignal new\n");
+    return ReceivedP2PCustomSignal(pMsg, cbMsg, (ISteamNetworkingCustomSignalingRecvContext *)pContext);
 }
 
 };

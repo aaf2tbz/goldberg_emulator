@@ -416,12 +416,20 @@ public:
 #define STEAMUGC_INTERFACE_VERSION "STEAMUGC_INTERFACE_VERSION021"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamUGC *SteamUGC();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamUGC *, SteamUGC, STEAMUGC_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 // Global accessor for the gameserver client
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamUGC *SteamGameServerUGC();
 STEAM_DEFINE_GAMESERVER_INTERFACE_ACCESSOR( ISteamUGC *, SteamGameServerUGC, STEAMUGC_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 //-----------------------------------------------------------------------------
 // Purpose: Callback for querying UGC

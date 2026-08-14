@@ -222,8 +222,12 @@ public:
 #define STEAMUSER_INTERFACE_VERSION "SteamUser023"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamUser *SteamUser();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamUser *, SteamUser, STEAMUSER_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 // callbacks
 #if defined( VALVE_CALLBACK_PACK_SMALL )

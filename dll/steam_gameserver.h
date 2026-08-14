@@ -352,4 +352,16 @@ public:
 
     //
     void RunCallbacks();
+
+bool SendUserConnectAndAuthenticate_DEPRECATED( uint32 unIPClient, const void *pvAuthBlob, uint32 cubAuthBlobSize, CSteamID *pSteamIDUser )
+{
+    PRINT_DEBUG("SendUserConnectAndAuthenticate_DEPRECATED\n");
+    return false;
+}
+
+void SendUserDisconnect_DEPRECATED( CSteamID steamIDUser )
+{
+    PRINT_DEBUG("SendUserDisconnect_DEPRECATED %llu\n", steamIDUser.ConvertToUint64());
+}
+
 };

@@ -77,7 +77,7 @@ static void free_steam_message_data(SteamNetworkingMessage_t *pMsg)
 static void delete_steam_message(SteamNetworkingMessage_t *pMsg)
 {
     if (pMsg->m_pfnFreeData) pMsg->m_pfnFreeData(pMsg);
-    delete pMsg;
+    delete (EmuSteamNetworkingMessage *)pMsg;
 }
 
 /// Allocate and initialize a message object.  Usually the reason
@@ -102,7 +102,7 @@ static void delete_steam_message(SteamNetworkingMessage_t *pMsg)
 SteamNetworkingMessage_t *AllocateMessage( int cbAllocateBuffer )
 {
     PRINT_DEBUG("Steam_Networking_Utils::AllocateMessage\n");
-    SteamNetworkingMessage_t *pMsg = new SteamNetworkingMessage_t();
+    SteamNetworkingMessage_t *pMsg = new EmuSteamNetworkingMessage();
     pMsg->m_pfnFreeData = &free_steam_message_data;
     pMsg->m_pfnRelease = &delete_steam_message;
     if (cbAllocateBuffer < 0)

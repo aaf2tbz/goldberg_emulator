@@ -244,4 +244,12 @@ inline void gameserveritem_t::SetName( const char *pName )
 }
 
 
+
+#ifdef POSIX
+#ifndef _snprintf
+#define _snprintf snprintf
+#endif
+#endif
+
+
 #endif // MATCHMAKINGTYPES_H

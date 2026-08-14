@@ -211,7 +211,8 @@ public:
 	HServerQuery PlayerDetails( uint32 unIP, uint16 usPort, ISteamMatchmakingPlayersResponse *pRequestServersResponse );
 
 	// Request the list of rules that the server is running (See ISteamGameServer::SetKeyValue() to set the rules server side)
-	HServerQuery ServerRules( uint32 unIP, uint16 usPort, ISteamMatchmakingRulesResponse *pRequestServersResponse ); 
+	HServerQuery ServerRules( uint32 unIP, uint16 usPort, ISteamMatchmakingRulesResponse *pRequestServersResponse );
+    HServerQuery ServerFriends( uint32 unIP, uint16 usPort, ISteamMatchmakingServerFriendsResponse *pRequestServersResponse ); 
 
 	// Cancel an outstanding Ping/Players/Rules query from above.  You should call this to cancel
 	// any in-progress requests before destructing a callback object that may have been passed 

@@ -288,6 +288,109 @@ enum { k_iSteamTimelineCallbacks = 6000 };
 # define STEAM_CLANG_ATTR(ATTR) __attribute__((annotate( ATTR )))
 #else
 # define STEAM_CLANG_ATTR(ATTR)
+
+// ===== Compatibility additions for legacy interface names and callback ranges =====
+class ISteamAppList;
+class ISteamGameSearch;
+class ISteamMusicRemote;
+class ISteamPS3OverlayRender;
+class ISteamTV;
+enum { k_iClientAudioCallbacks = 2400 };
+enum { k_iClientBluetoothManagerCallbacks = 4800 };
+enum { k_iClientCompatCallbacks = 5800 };
+enum { k_iClientControllerCallbacks = 2700 };
+enum { k_iClientDepotBuilderCallbacks = 1400 };
+enum { k_iClientDeviceAuthCallbacks = 3000 };
+enum { k_iClientFriendsCallbacks = 800 };
+enum { k_iClientGameNotificationCallbacks = 4300 };
+enum { k_iClientHTTPCallbacks = 2100 };
+enum { k_iClientInventoryCallbacks = 4700 };
+enum { k_iClientMusicCallbacks = 3200 };
+enum { k_iClientNetworkDeviceManagerCallbacks = 3100 };
+enum { k_iClientNetworkingUtilsCallbacks = 6000 };
+enum { k_iClientParentalSettingsCallbacks = 2900 };
+enum { k_iClientPartiesCallbacks = 5400 };
+enum { k_iClientRemoteClientManagerCallbacks = 3300 };
+enum { k_iClientRemoteControlManagerCallbacks = 3800 };
+enum { k_iClientRemoteStorageCallbacks = 1300 };
+enum { k_iClientSTARCallbacks = 5600 };
+enum { k_iClientScreenshotsCallbacks = 2200 };
+enum { k_iClientShaderCallbacks = 5100 };
+enum { k_iClientSharedConnectionCallbacks = 4900 };
+enum { k_iClientShortcutsCallbacks = 3700 };
+enum { k_iClientStorageDeviceManagerCallbacks = 6200 };
+enum { k_iClientSystemManagerCallbacks = 6100 };
+enum { k_iClientUGCCallbacks = 3400 };
+enum { k_iClientUnifiedMessagesCallbacks = 2500 };
+enum { k_iClientUserCallbacks = 900 };
+enum { k_iClientUtilsCallbacks = 1600 };
+enum { k_iClientVRCallbacks = 4200 };
+enum { k_iClientVideoCallbacks = 4600 };
+enum { k_iSteamAppListCallbacks = 3900 };
+enum { k_iSteamMusicRemoteCallbacks = 4100 };
+
+
+// ===== Compatibility class removed from newer SDK headers =====
+class CSteamAPIContext
+{
+public:
+	CSteamAPIContext() { Clear(); }
+	inline void Clear() { memset( this, 0, sizeof(*this) ); }
+	inline bool Init(); // NOTE: This is defined in steam_api.h, to avoid this file having to include everything
+	ISteamClient*		SteamClient() const					{ return m_pSteamClient; }
+	ISteamUser*			SteamUser() const					{ return m_pSteamUser; }
+	ISteamFriends*		SteamFriends() const				{ return m_pSteamFriends; }
+	ISteamUtils*		SteamUtils() const					{ return m_pSteamUtils; }
+	ISteamMatchmaking*	SteamMatchmaking() const			{ return m_pSteamMatchmaking; }
+	ISteamGameSearch*	SteamGameSearch() const				{ return m_pSteamGameSearch; }
+	ISteamUserStats*	SteamUserStats() const				{ return m_pSteamUserStats; }
+	ISteamApps*			SteamApps() const					{ return m_pSteamApps; }
+	ISteamMatchmakingServers* SteamMatchmakingServers() const { return m_pSteamMatchmakingServers; }
+	ISteamNetworking*	SteamNetworking() const				{ return m_pSteamNetworking; }
+	ISteamRemoteStorage* SteamRemoteStorage() const			{ return m_pSteamRemoteStorage; }
+	ISteamScreenshots*	SteamScreenshots() const			{ return m_pSteamScreenshots; }
+	ISteamHTTP*			SteamHTTP() const					{ return m_pSteamHTTP; }
+	ISteamController*	SteamController() const				{ return m_pController; }
+	ISteamUGC*			SteamUGC() const					{ return m_pSteamUGC; }
+	ISteamAppList*		SteamAppList() const				{ return m_pSteamAppList; }
+	ISteamMusic*		SteamMusic() const					{ return m_pSteamMusic; }
+	ISteamMusicRemote*	SteamMusicRemote() const			{ return m_pSteamMusicRemote; }
+	ISteamHTMLSurface*	SteamHTMLSurface() const			{ return m_pSteamHTMLSurface; }
+	ISteamInventory*	SteamInventory() const				{ return m_pSteamInventory; }
+	ISteamVideo*		SteamVideo() const					{ return m_pSteamVideo; }
+	ISteamTV*			SteamTV() const						{ return m_pSteamTV; }
+	ISteamParentalSettings* SteamParentalSettings() const	{ return m_pSteamParentalSettings; }
+	ISteamInput*		SteamInput() const					{ return m_pSteamInput; }
+private:
+	ISteamClient		*m_pSteamClient;
+	ISteamUser			*m_pSteamUser;
+	ISteamFriends		*m_pSteamFriends;
+	ISteamUtils			*m_pSteamUtils;
+	ISteamMatchmaking	*m_pSteamMatchmaking;
+	ISteamGameSearch	*m_pSteamGameSearch;
+	ISteamUserStats		*m_pSteamUserStats;
+	ISteamApps			*m_pSteamApps;
+	ISteamMatchmakingServers *m_pSteamMatchmakingServers;
+	ISteamNetworking	*m_pSteamNetworking;
+	ISteamRemoteStorage *m_pSteamRemoteStorage;
+	ISteamScreenshots	*m_pSteamScreenshots;
+	ISteamHTTP			*m_pSteamHTTP;
+	ISteamController	*m_pController;
+	ISteamUGC			*m_pSteamUGC;
+	ISteamAppList		*m_pSteamAppList;
+	ISteamMusic			*m_pSteamMusic;
+	ISteamMusicRemote	*m_pSteamMusicRemote;
+	ISteamHTMLSurface	*m_pSteamHTMLSurface;
+	ISteamInventory		*m_pSteamInventory;
+	ISteamVideo			*m_pSteamVideo;
+	ISteamTV			*m_pSteamTV;
+	ISteamParentalSettings *m_pSteamParentalSettings;
+	ISteamInput			*m_pSteamInput;
+};
+
+
+enum { k_IClientProductBuilderCallbacks = 3600 };
+
 #endif
 
 #define STEAM_OUT_STRUCT() STEAM_CLANG_ATTR( "out_struct: ;" )

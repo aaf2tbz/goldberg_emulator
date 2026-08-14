@@ -400,6 +400,8 @@ struct Auth_Ticket_Data {
     std::chrono::high_resolution_clock::time_point created;
 };
 
+class Common_Message; // protobuf type from net.pb.h; base.h is included before net.pb.h in some TUs
+
 class Auth_Ticket_Manager {
     class Settings *settings;
     class Networking *network;
@@ -463,4 +465,18 @@ bool crack_SteamAPI_RestartAppIfNecessary(uint32 unOwnAppID);
 bool crack_SteamAPI_Init();
 #endif
 
+// The SteamNetworkingMessage_t destructor became protected in newer SDK
+// headers. Games destroy messages through Release(); the emulator creates
+// and destroys its own messages through this access subclass (same layout).
+struct EmuSteamNetworkingMessage : public SteamNetworkingMessage_t {};
+static SteamNetworkingMessage_t *new_emu_steam_message()
+{
+    return new EmuSteamNetworkingMessage();
+}
+static void delete_emu_steam_message(SteamNetworkingMessage_t *pMsg)
+{
+    delete (EmuSteamNetworkingMessage *)pMsg;
+}
+
 #endif
+

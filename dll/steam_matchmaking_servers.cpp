@@ -607,3 +607,15 @@ void Steam_Matchmaking_Servers::Callback(Common_Message *msg)
         }
     }
 }
+
+// Ask a server for a list of friends who have played on it.
+// You'll get a callback per friend -- see ISteamMatchmakingServerFriendsResponse
+HServerQuery Steam_Matchmaking_Servers::ServerFriends( uint32 unIP, uint16 usPort, ISteamMatchmakingServerFriendsResponse *pRequestServersResponse )
+{
+    PRINT_DEBUG("ServerFriends %hhu.%hhu.%hhu.%hhu:%hu\n", ((unsigned char *)&unIP)[3], ((unsigned char *)&unIP)[2], ((unsigned char *)&unIP)[1], ((unsigned char *)&unIP)[0], usPort);
+    std::lock_guard<std::recursive_mutex> lock(global_mutex);
+    if (!pRequestServersResponse) return (HServerQuery)0;
+    // No friends to report; complete the query immediately.
+    pRequestServersResponse->FriendsRefreshComplete();
+    return (HServerQuery)0;
+}

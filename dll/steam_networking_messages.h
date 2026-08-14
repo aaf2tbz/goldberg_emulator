@@ -220,7 +220,7 @@ static void free_steam_message_data(SteamNetworkingMessage_t *pMsg)
 static void delete_steam_message(SteamNetworkingMessage_t *pMsg)
 {
     if (pMsg->m_pfnFreeData) pMsg->m_pfnFreeData(pMsg);
-    delete pMsg;
+    delete (EmuSteamNetworkingMessage *)pMsg;
 }
 
 /// Reads the next message that has been sent from another user via SendMessageToUser() on the given channel.
@@ -237,7 +237,7 @@ int ReceiveMessagesOnChannel( int nLocalChannel, SteamNetworkingMessage_t **ppOu
         auto chan = conn.second.data.find(nLocalChannel);
         if (chan != conn.second.data.end()) {
             while (!chan->second.empty() && message_counter < nMaxMessages) {
-                SteamNetworkingMessage_t *pMsg = new SteamNetworkingMessage_t(); //TODO size is wrong
+                SteamNetworkingMessage_t *pMsg = new EmuSteamNetworkingMessage(); //TODO size is wrong
                 unsigned long size = chan->second.front().size();
                 pMsg->m_pData = malloc(size);
                 pMsg->m_cbSize = size;

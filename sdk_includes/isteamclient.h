@@ -155,8 +155,12 @@ public:
 #ifndef STEAM_API_EXPORTS
 
 // Global ISteamClient interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamClient *SteamClient();
 STEAM_DEFINE_INTERFACE_ACCESSOR( ISteamClient *, SteamClient, SteamInternal_CreateInterface( STEAMCLIENT_INTERFACE_VERSION ), "global", STEAMCLIENT_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 // The internal ISteamClient used for the gameserver interface.
 // (This is actually the same thing.  You really shouldn't need to access any of this stuff directly.)

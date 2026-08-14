@@ -531,4 +531,17 @@ bool BSetDurationControlOnlineState( EDurationControlOnlineState eNewState )
     return false;
 }
 
+
+int InitiateGameConnection_DEPRECATED( void *pAuthBlob, int cbMaxAuthBlob, CSteamID steamIDGameServer, uint32 unIPServer, uint16 usPortServer, bool bSecure )
+{
+    PRINT_DEBUG("InitiateGameConnection_DEPRECATED\n");
+    return InitiateGameConnection(pAuthBlob, cbMaxAuthBlob, steamIDGameServer, unIPServer, usPortServer, bSecure);
+}
+
+void TerminateGameConnection_DEPRECATED( uint32 unIPServer, uint16 usPortServer )
+{
+    PRINT_DEBUG("TerminateGameConnection_DEPRECATED\n");
+    TerminateGameConnection(unIPServer, usPortServer);
+}
+
 };

@@ -74,6 +74,11 @@ Steam_Game_Coordinator(class Settings *settings, class Networking *network, clas
 }
 
 // sends a message to the Game Coordinator
+EGCResults SendMessage( uint32 unMsgType, const void *pubData, uint32 cubData )
+{
+    return SendMessage_(unMsgType, pubData, cubData);
+}
+
 EGCResults SendMessage_( uint32 unMsgType, const void *pubData, uint32 cubData )
 {
     PRINT_DEBUG("Steam_Game_Coordinator::SendMessage %X %u len %u\n", unMsgType, (~protobuf_mask) & unMsgType, cubData);

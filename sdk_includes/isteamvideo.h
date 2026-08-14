@@ -45,8 +45,12 @@ public:
 #define STEAMVIDEO_INTERFACE_VERSION "STEAMVIDEO_INTERFACE_V007"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamVideo *SteamVideo();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamVideo *, SteamVideo, STEAMVIDEO_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 STEAM_CALLBACK_BEGIN( GetVideoURLResult_t, k_iSteamVideoCallbacks + 11 )
 	STEAM_CALLBACK_MEMBER( 0, EResult, m_eResult )

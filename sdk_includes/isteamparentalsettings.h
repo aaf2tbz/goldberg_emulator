@@ -53,8 +53,12 @@ public:
 #define STEAMPARENTALSETTINGS_INTERFACE_VERSION "STEAMPARENTALSETTINGS_INTERFACE_VERSION001"
 
 // Global interface accessor
+#ifndef STEAM_API_EXPORTS
+#ifndef STEAM_API_EXPORTS
 inline ISteamParentalSettings *SteamParentalSettings();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamParentalSettings *, SteamParentalSettings, STEAMPARENTALSETTINGS_INTERFACE_VERSION );
+#endif // STEAM_API_EXPORTS
+#endif // STEAM_API_EXPORTS
 
 //-----------------------------------------------------------------------------
 // Purpose: Callback for querying UGC

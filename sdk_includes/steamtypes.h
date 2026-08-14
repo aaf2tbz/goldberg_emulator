@@ -96,6 +96,50 @@ const SteamAPICall_t k_uAPICallInvalid = 0x0;
 typedef uint32 AccountID_t;
 const AccountID_t k_uAccountIdInvalid = 0;
 
+// ID for cafe sites
+typedef uint64 SiteId_t;
+const SiteId_t k_ulSiteIdInvalid = 0;
+
+#if defined(_WIN32) && defined(__GNUC__) && !defined(_S4N_)
+	#define STEAMWORKS_STRUCT_RETURN_0(returnType, functionName)	\
+		virtual void functionName( returnType& ret ) = 0;			\
+		inline returnType functionName()							\
+		{															\
+			returnType ret;											\
+			this->functionName(ret);								\
+			return ret;												\
+		}
+	#define STEAMWORKS_STRUCT_RETURN_1(returnType, functionName, arg1Type, arg1Name)	\
+		virtual void functionName( returnType& ret, arg1Type arg1Name ) = 0;			\
+		inline returnType functionName( arg1Type arg1Name )								\
+		{																				\
+			returnType ret;																\
+			this->functionName(ret, arg1Name);											\
+			return ret;																	\
+		}
+	#define STEAMWORKS_STRUCT_RETURN_2(returnType, functionName, arg1Type, arg1Name, arg2Type, arg2Name)	\
+		virtual void functionName( returnType& ret, arg1Type arg1Name, arg2Type arg2Name ) = 0;				\
+		inline returnType functionName( arg1Type arg1Name, arg2Type arg2Name )								\
+		{																									\
+			returnType ret;																					\
+			this->functionName(ret, arg1Name, arg2Name);													\
+			return ret;																						\
+		}
+	#define STEAMWORKS_STRUCT_RETURN_3(returnType, functionName, arg1Type, arg1Name, arg2Type, arg2Name, arg3Type, arg3Name)	\
+		virtual void functionName( returnType& ret, arg1Type arg1Name, arg2Type arg2Name, arg3Type arg3Name ) = 0;				\
+		inline returnType functionName( arg1Type arg1Name, arg2Type arg2Name, arg3Type arg3Name )								\
+		{																														\
+			returnType ret;																										\
+			this->functionName(ret, arg1Name, arg2Name, arg3Name);																\
+			return ret;																											\
+		}
+#else
+	#define STEAMWORKS_STRUCT_RETURN_0(returnType, functionName) virtual returnType functionName() = 0;
+	#define STEAMWORKS_STRUCT_RETURN_1(returnType, functionName, arg1Type, arg1Name) virtual returnType functionName( arg1Type arg1Name ) = 0;
+	#define STEAMWORKS_STRUCT_RETURN_2(returnType, functionName, arg1Type, arg1Name, arg2Type, arg2Name) virtual returnType functionName( arg1Type arg1Name, arg2Type arg2Name ) = 0;
+	#define STEAMWORKS_STRUCT_RETURN_3(returnType, functionName, arg1Type, arg1Name, arg2Type, arg2Name, arg3Type, arg3Name) virtual returnType functionName( arg1Type arg1Name, arg2Type arg2Name, arg3Type arg3Name ) = 0;
+#endif
+
 // Party Beacon ID
 typedef uint64 PartyBeaconID_t;
 const PartyBeaconID_t k_ulPartyBeaconIdInvalid = 0;
@@ -175,4 +219,130 @@ struct SteamIPAddress_t
 
 #pragma pack( pop )
 
+
+// ===== Compatibility additions restored from older SDK headers =====
+
+#define STEAM_METHOD_DESC(DESC) STEAM_CLANG_ATTR( "desc:" #DESC ";" )
+
+#define STEAM_IGNOREATTR() STEAM_CLANG_ATTR( "ignore" )
+
+#define STEAM_OUT_STRUCT() STEAM_CLANG_ATTR( "out_struct: ;" )
+
+#define STEAM_OUT_STRING() STEAM_CLANG_ATTR( "out_string: ;" )
+
+#define STEAM_OUT_ARRAY_CALL(COUNTER,FUNCTION,PARAMS) STEAM_CLANG_ATTR( "out_array_call:" #COUNTER "," #FUNCTION "," #PARAMS ";" )
+
+#define STEAM_OUT_ARRAY_COUNT(COUNTER, DESC) STEAM_CLANG_ATTR( "out_array_count:" #COUNTER  ";desc:" #DESC )
+
+#define STEAM_ARRAY_COUNT(COUNTER) STEAM_CLANG_ATTR( "array_count:" #COUNTER ";" )
+
+#define STEAM_ARRAY_COUNT_D(COUNTER, DESC) STEAM_CLANG_ATTR( "array_count:" #COUNTER ";desc:" #DESC )
+
+#define STEAM_BUFFER_COUNT(COUNTER) STEAM_CLANG_ATTR( "buffer_count:" #COUNTER ";" )
+
+#define STEAM_OUT_BUFFER_COUNT(COUNTER) STEAM_CLANG_ATTR( "out_buffer_count:" #COUNTER ";" )
+
+#define STEAM_OUT_STRING_COUNT(COUNTER) STEAM_CLANG_ATTR( "out_string_count:" #COUNTER ";" )
+
+#define STEAM_DESC(DESC) STEAM_CLANG_ATTR("desc:" #DESC ";")
+
+#define STEAM_CALL_RESULT(RESULT_TYPE) STEAM_CLANG_ATTR("callresult:" #RESULT_TYPE ";")
+
+#define STEAM_CALL_BACK(RESULT_TYPE) STEAM_CLANG_ATTR("callback:" #RESULT_TYPE ";")
+
+#define STEAM_FLAT_NAME(NAME) STEAM_CLANG_ATTR("flat_name:" #NAME ";")
+
+const int k_cubSaltSize   = 8;
+
+typedef uint64 GID_t;
+
+const GID_t k_GIDNil = 0xffffffffffffffffull;
+
+typedef uint64 JobID_t;
+
+const GID_t k_TxnIDUnknown = 0;
+
+const JobID_t k_JobIDNil = 0xffffffffffffffffull;
+
+typedef uint32 PackageId_t;
+
+const PackageId_t k_uPackageIdFreeSub = 0x0;
+
+const PackageId_t k_uPackageIdInvalid = 0xFFFFFFFF;
+
+typedef uint32 BundleId_t;
+
+const BundleId_t k_uBundleIdInvalid = 0;
+
+typedef uint64 AssetClassId_t;
+
+const AssetClassId_t k_ulAssetClassIdInvalid = 0x0;
+
+typedef uint32 PhysicalItemId_t;
+
+const PhysicalItemId_t k_uPhysicalItemIdInvalid = 0x0;
+
+typedef uint32 CellID_t;
+
+const CellID_t k_uCellIDInvalid = 0xFFFFFFFF;
+
+typedef uint32 PartnerId_t;
+
+const PartnerId_t k_uPartnerIdInvalid = 0;
+
+typedef uint64 ManifestId_t;
+
+ 
+const ManifestId_t k_uManifestIdInvalid = 0;
+
+typedef	uint8 Salt_t[ k_cubSaltSize ];
+//-----------------------------------------------------------------------------
+// GID (GlobalID) stuff
+// This is a globally unique identifier.  It's guaranteed to be unique across all
+// racks and servers for as long as a given universe persists.
+//-----------------------------------------------------------------------------
+// NOTE: for GID parsing/rendering and other utils, see gid.h
+// For convenience, we define a number of types that are just new names for GIDs
+typedef uint64 JobID_t;			// Each Job has a unique ID
+typedef GID_t TxnID_t;			// Each financial transaction has a unique ID
+const GID_t k_TxnIDNil = k_GIDNil;
+// this is baked into client messages and interfaces as an int, 
+// make sure we never break this.
+// this is baked into client messages and interfaces as an int, 
+// make sure we never break this.
+// this is baked into client messages and interfaces as an int, 
+// make sure we never break this.  AppIds and DepotIDs also presently
+// share the same namespace, but since we'd like to change that in the future
+// I've defined it seperately here.
+// RTime32
+// We use this 32 bit time representing real world time.
+// It offers 1 second resolution beginning on January 1, 1970 (Unix time)
+// handle to a Steam API call
+// ID for a depot content manifest
+// ID for cafe sites
+
+
+typedef bool steam_bool;
 #endif // STEAMTYPES_H
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

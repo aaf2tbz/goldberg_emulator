@@ -243,17 +243,6 @@ uint32 GetQueryUGCNumAdditionalPreviews( UGCQueryHandle_t handle, uint32 index )
 }
 
 
-bool GetQueryUGCAdditionalPreview( UGCQueryHandle_t handle, uint32 index, uint32 previewIndex, STEAM_OUT_STRING_COUNT(cchURLSize) char *pchURLOrVideoID, uint32 cchURLSize, STEAM_OUT_STRING_COUNT(cchURLSize) char *pchOriginalFileName, uint32 cchOriginalFileNameSize, EItemPreviewType *pPreviewType )
-{
-    PRINT_DEBUG("Steam_UGC::GetQueryUGCAdditionalPreview\n");
-    return false;
-}
-
-bool GetQueryUGCAdditionalPreview( UGCQueryHandle_t handle, uint32 index, uint32 previewIndex, char *pchURLOrVideoID, uint32 cchURLSize, bool *hz )
-{
-    PRINT_DEBUG("Steam_UGC::GetQueryUGCAdditionalPreview old\n");
-    return false;
-}
 
 uint32 GetQueryUGCNumKeyValueTags( UGCQueryHandle_t handle, uint32 index )
 {
@@ -899,6 +888,110 @@ SteamAPICall_t GetWorkshopEULAStatus()
 {
     PRINT_DEBUG("%s\n", __FUNCTION__);
     return 0;
+}
+
+
+
+// Legacy signature used by ISteamUGC005..007 (older SDKs)
+bool GetQueryUGCAdditionalPreview( UGCQueryHandle_t handle, uint32 index, uint32 previewIndex, char *pchURLOrVideoID, uint32 cchURLSize, bool *hz )
+{
+    PRINT_DEBUG("Steam_UGC::GetQueryUGCAdditionalPreview legacy\n");
+    return false;
+}
+
+// Retrieve additional previews of an item
+bool GetQueryUGCAdditionalPreview( UGCQueryHandle_t handle, uint32 index, uint32 previewIndex, char *pchURLOrVideoID, uint32 cchURLSize, char *pchOriginalFileName, uint32 cchOriginalFileNameSize, EItemPreviewType *pPreviewType )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    if (pPreviewType) *pPreviewType = k_EItemPreviewType_Image;
+    return false;
+}
+
+// Number of game versions that an item supports
+uint32 GetNumSupportedGameVersions( UGCQueryHandle_t handle, uint32 index )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    return 0;
+}
+
+bool GetSupportedGameVersionData( UGCQueryHandle_t handle, uint32 index, uint32 versionIndex, char *pchGameBranchMin, char *pchGameBranchMax, uint32 cchGameBranchSize )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    return false;
+}
+
+bool SetAdminQuery( UGCUpdateHandle_t handle, bool bAdminQuery )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    return true;
+}
+
+bool SetItemTags( UGCUpdateHandle_t updateHandle, const SteamParamStringArray_t *pTags, bool bAllowAdminTags )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    return true;
+}
+
+bool SetRequiredGameVersions( UGCUpdateHandle_t handle, const char *pszGameBranchMin, const char *pszGameBranchMax )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    return true;
+}
+
+uint32 GetNumSubscribedItems( bool bIncludeLocallyDisabled )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    std::lock_guard<std::recursive_mutex> lock(global_mutex);
+    return subscribed.size();
+}
+
+uint32 GetSubscribedItems( PublishedFileId_t* pvecPublishedFileID, uint32 cMaxEntries, bool bIncludeLocallyDisabled )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    std::lock_guard<std::recursive_mutex> lock(global_mutex);
+    uint32 count = 0;
+    for (auto const& item : subscribed) {
+        if (count >= cMaxEntries) break;
+        pvecPublishedFileID[count++] = item;
+    }
+    return count;
+}
+
+uint32 GetUserContentDescriptorPreferences( EUGCContentDescriptorID *pvecDescriptors, uint32 cMaxEntries )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    return 0;
+}
+
+bool SetItemsDisabledLocally( PublishedFileId_t *pvecPublishedFileIDs, uint32 unNumPublishedFileIDs, bool bDisabledLocally )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    return true;
+}
+
+bool SetSubscriptionsLoadOrder( PublishedFileId_t *pvecPublishedFileIDs, uint32 unNumPublishedFileIDs )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    return true;
+}
+
+bool MarkDownloadedItemAsUnused( PublishedFileId_t nPublishedFileID )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    return true;
+}
+
+uint32 GetNumDownloadedItems()
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    std::lock_guard<std::recursive_mutex> lock(global_mutex);
+    return subscribed.size();
+}
+
+uint32 GetDownloadedItems( PublishedFileId_t *pvecPublishedFileIDs, uint32 cMaxEntries )
+{
+    PRINT_DEBUG("%s\n", __FUNCTION__);
+    return GetSubscribedItems(pvecPublishedFileIDs, cMaxEntries);
 }
 
 

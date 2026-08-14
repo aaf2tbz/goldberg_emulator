@@ -12,7 +12,6 @@
 
 #include "isteamclient.h"
 
-#define MASTERSERVERUPDATERPORT_USEGAMESOCKETSHARE	((uint16)-1)
 
 
 //-----------------------------------------------------------------------------

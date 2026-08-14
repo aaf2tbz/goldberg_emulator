@@ -346,3 +346,50 @@ bool Steam_Apps::SetDlcContext( AppId_t nAppID )
     PRINT_DEBUG("SetDlcContext %u\n", nAppID);
     return true;
 }
+
+// returns total number of known app branches (including default "public" branch). nAvailable is number of available betas
+int Steam_Apps::GetNumBetas( int *pnAvailable, int *pnPrivate )
+{
+    PRINT_DEBUG("GetNumBetas\n");
+    // only the default "public" branch exists in the emulator
+    if (pnAvailable) *pnAvailable = 0;
+    if (pnPrivate) *pnPrivate = 0;
+    return 1;
+}
+
+// return beta branch details, name, description, current BuildID and state flags (EBetaBranchFlags)
+bool Steam_Apps::GetBetaInfo( int iBetaIndex, uint32 *punFlags, uint32 *punBuildID, char *pchBetaName, int cchBetaName, char *pchDescription, int cchDescription, uint32 *punLastUpdated )
+{
+    PRINT_DEBUG("GetBetaInfo %i\n", iBetaIndex);
+    if (iBetaIndex != 0) return false;
+    if (punFlags) *punFlags = 0;
+    if (punBuildID) *punBuildID = 0;
+    if (pchBetaName && cchBetaName > 0) {
+        strncpy(pchBetaName, "public", cchBetaName);
+        pchBetaName[cchBetaName - 1] = 0;
+    }
+    if (pchDescription && cchDescription > 0) {
+        strncpy(pchDescription, "Default branch", cchDescription);
+        pchDescription[cchDescription - 1] = 0;
+    }
+    if (punLastUpdated) *punLastUpdated = 0;
+    return true;
+}
+
+// select this beta branch for this app as active, might need the game to restart so Steam can update to that branch
+bool Steam_Apps::SetActiveBeta( const char *pchBetaName )
+{
+    PRINT_DEBUG("SetActiveBeta %s\n", pchBetaName);
+    return false;
+}
+
+// game performance settings
+void Steam_Apps::SetGamePerformanceSetting( EGamePerformanceSetting setting )
+{
+    PRINT_DEBUG("SetGamePerformanceSetting %i\n", setting);
+}
+
+void Steam_Apps::SetGameRenderResolution( uint32 unWidth, uint32 unHeight )
+{
+    PRINT_DEBUG("SetGameRenderResolution %u %u\n", unWidth, unHeight);
+}
