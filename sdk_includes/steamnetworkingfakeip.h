@@ -2,6 +2,7 @@
 
 #ifndef STEAMNETWORKINGFAKEIP_H
 #define STEAMNETWORKINGFAKEIP_H
+#pragma once
 
 #include "steamnetworkingtypes.h"
 #include "steam_api_common.h"
@@ -75,7 +76,6 @@ public:
 	/// or receiving application-layer "close connection" packets.
 	virtual void ScheduleCleanup( const SteamNetworkingIPAddr &remoteAddress ) = 0;
 };
-#define STEAMNETWORKINGFAKEUDPPORT_INTERFACE_VERSION "SteamNetworkingFakeUDPPort001" /* for proton codegen */
 
 /// Callback struct used to notify when a connection has changed state
 #if defined( VALVE_CALLBACK_PACK_SMALL )
@@ -133,3 +133,5 @@ struct SteamNetworkingFakeIPResult_t
 #pragma pack( pop )
 
 #endif // _H
+
+#define STEAMNETWORKINGFAKEUDPPORT_INTERFACE_VERSION "SteamNetworkingFakeUDPPort001" /* for proton codegen */

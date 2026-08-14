@@ -102,9 +102,10 @@ enum EWorkshopFileType
 	k_EWorkshopFileTypeSteamworksAccessInvite = 13,		// internal
 	k_EWorkshopFileTypeSteamVideo			  = 14,		// Steam video
 	k_EWorkshopFileTypeGameManagedItem		  = 15,		// managed completely by the game, not the user, and not shown on the web
+	k_EWorkshopFileTypeClip					  = 16,		// internal
 
 	// Update k_EWorkshopFileTypeMax if you add values.
-	k_EWorkshopFileTypeMax = 16
+	k_EWorkshopFileTypeMax = 17
 	
 };
 
@@ -322,11 +323,9 @@ class ISteamRemoteStorage
 
 #define STEAMREMOTESTORAGE_INTERFACE_VERSION "STEAMREMOTESTORAGE_INTERFACE_VERSION016"
 
-#ifndef STEAM_API_EXPORTS
 // Global interface accessor
 inline ISteamRemoteStorage *SteamRemoteStorage();
 STEAM_DEFINE_USER_INTERFACE_ACCESSOR( ISteamRemoteStorage *, SteamRemoteStorage, STEAMREMOTESTORAGE_INTERFACE_VERSION );
-#endif
 
 // callbacks
 #if defined( VALVE_CALLBACK_PACK_SMALL )

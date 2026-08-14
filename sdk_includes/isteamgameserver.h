@@ -233,8 +233,7 @@ public:
 	//
 	// DEPRECATED!  This function will be removed from the SDK in an upcoming version.
 	//              Please migrate to BeginAuthSession and related functions.
-	//virtual bool SendUserConnectAndAuthenticate_DEPRECATED( uint32 unIPClient, const void *pvAuthBlob, uint32 cubAuthBlobSize, CSteamID *pSteamIDUser ) = 0;
-	virtual bool SendUserConnectAndAuthenticate( uint32 unIPClient, const void *pvAuthBlob, uint32 cubAuthBlobSize, CSteamID *pSteamIDUser ) = 0;
+	virtual bool SendUserConnectAndAuthenticate_DEPRECATED( uint32 unIPClient, const void *pvAuthBlob, uint32 cubAuthBlobSize, CSteamID *pSteamIDUser ) = 0;
 
 	// Creates a fake user (ie, a bot) which will be listed as playing on the server, but skips validation.  
 	// 
@@ -248,8 +247,7 @@ public:
 	//
 	// DEPRECATED!  This function will be removed from the SDK in an upcoming version.
 	//              Please migrate to BeginAuthSession and related functions.
-	//virtual void SendUserDisconnect_DEPRECATED( CSteamID steamIDUser ) = 0;
-	virtual void SendUserDisconnect( CSteamID steamIDUser ) = 0;
+	virtual void SendUserDisconnect_DEPRECATED( CSteamID steamIDUser ) = 0;
 
 	// Update the data to be displayed in the server browser and matchmaking interfaces for a user
 	// currently connected to the server.  For regular users you must call this after you receive a
@@ -270,24 +268,9 @@ public:
 
 #define STEAMGAMESERVER_INTERFACE_VERSION "SteamGameServer015"
 
-#ifndef STEAM_API_EXPORTS
 // Global accessor
 inline ISteamGameServer *SteamGameServer();
 STEAM_DEFINE_GAMESERVER_INTERFACE_ACCESSOR( ISteamGameServer *, SteamGameServer, STEAMGAMESERVER_INTERFACE_VERSION );
-#endif
-
-// game server flags
-const uint32 k_unServerFlagNone			= 0x00;
-const uint32 k_unServerFlagActive		= 0x01;		// server has users playing
-const uint32 k_unServerFlagSecure		= 0x02;		// server wants to be secure
-const uint32 k_unServerFlagDedicated	= 0x04;		// server is dedicated
-const uint32 k_unServerFlagLinux		= 0x08;		// linux build
-const uint32 k_unServerFlagPassworded	= 0x10;		// password protected
-const uint32 k_unServerFlagPrivate		= 0x20;		// server shouldn't list on master server and
-													// won't enforce authentication of users that connect to the server.
-													// Useful when you run a server where the clients may not
-													// be connected to the internet but you want them to play (i.e LANs)
-
 
 // callbacks
 #if defined( VALVE_CALLBACK_PACK_SMALL )
