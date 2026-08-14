@@ -417,7 +417,9 @@ struct FilterTextDictionaryChanged_t
 
 #pragma pack( pop )
 
+#if defined( POSIX )
 #define __cdecl
+#endif
 
 #endif // ISTEAMUTILS_H
 

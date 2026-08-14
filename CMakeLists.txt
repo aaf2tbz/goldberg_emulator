@@ -32,10 +32,15 @@ if (APPLE)
 	set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 endif()
 
-if (APPLE OR (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU"))
-	set(protobuf_BUILD_TESTS CACHE BOOL OFF FORCE)
+if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+	# mingw cross builds: only the runtime library is needed (the generated
+	# protobuf sources are checked into the repository)
 	set(protobuf_BUILD_LIBPROTOC CACHE BOOL OFF FORCE)
 	set(protobuf_BUILD_PROTOC_BINARIES CACHE BOOL OFF FORCE)
+endif()
+
+if (APPLE OR (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU"))
+	set(protobuf_BUILD_TESTS CACHE BOOL OFF FORCE)
 
 	include(FetchContent)
 	set(FetchContent_Quiet CACHE BOOL OFF FORCE)
