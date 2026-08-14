@@ -48,11 +48,11 @@ if (APPLE)
 
 	# Pin the protobuf compiler and libraries to the freshly fetched build
 	# (otherwise FindProtobuf may pick up an incompatible system protoc).
-	set(Protobuf_PROTOC_EXECUTABLE "${protobuf_BINARY_DIR}/protoc-${protobuf_VERSION}" CACHE FILEPATH "" FORCE)
+	set(Protobuf_PROTOC_EXECUTABLE "${protobuf_BINARY_DIR}/protoc" CACHE FILEPATH "" FORCE)
 	set(Protobuf_LIBRARY_RELEASE protobuf::libprotobuf CACHE FILEPATH "" FORCE)
 	set(Protobuf_LIBRARY_DEBUG protobuf::libprotobuf CACHE FILEPATH "" FORCE)
 	set(Protobuf_INCLUDE_DIR "${protobuf_SOURCE_DIR}/src" CACHE PATH "" FORCE)
-	set(PROTOBUF_PROTOC_EXECUTABLE "${protobuf_BINARY_DIR}/protoc-${protobuf_VERSION}")
+	set(PROTOBUF_PROTOC_EXECUTABLE "${protobuf_BINARY_DIR}/protoc")
 endif()
 
 # Find the protobuf compiler and libraries
