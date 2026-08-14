@@ -15,6 +15,10 @@
    License along with the Goldberg Emulator; if not, see
    <http://www.gnu.org/licenses/>.  */
 
+#ifndef STEAM_NETWORKING_MESSAGES_INCLUDE
+#define STEAM_NETWORKING_MESSAGES_INCLUDE
+
+
 #include "base.h"
 
 #define NETWORKING_MESSAGES_TIMEOUT 30.0
@@ -444,3 +448,5 @@ void Callback(Common_Message *msg)
 }
 
 };
+
+#endif // STEAM_NETWORKING_MESSAGES_INCLUDE

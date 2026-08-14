@@ -16,6 +16,8 @@
    <http://www.gnu.org/licenses/>.  */
 
 #include "base.h"
+#include "steam_networking_messages.h"
+#include "../sdk_includes/steamnetworkingfakeip.h"
 
 struct Listen_Socket {
     HSteamListenSocket socket_id;
@@ -70,6 +72,79 @@ struct shared_between_client_server {
     unsigned used;
 };
 
+// Functional ISteamNetworkingFakeUDPPort for the emulator.
+//
+// FakeIP addresses are derived deterministically from the account id:
+//   169.254.<acct_hi>.<acct_lo> : <base_port + fake port index>
+// Every peer can therefore resolve a FakeIP back to the owning SteamID
+// without a central allocation table. Datagrams are transported through
+// the emulator's ISteamNetworkingMessages layer.
+class Steam_Networking_FakeUDP_Port : public ISteamNetworkingFakeUDPPort {
+    class Steam_Networking_Messages *networking_messages;
+    CSteamID local_id;
+    int idx_fake_server_port;
+    bool destroyed;
+
+    static const uint16 BASE_FAKE_UDP_PORT = 10000;
+
+public:
+    Steam_Networking_FakeUDP_Port(class Steam_Networking_Messages *messages, CSteamID id, int idx_fake_server_port)
+    {
+        this->networking_messages = messages;
+        this->local_id = id;
+        this->idx_fake_server_port = idx_fake_server_port;
+        destroyed = false;
+    }
+
+    static SteamNetworkingIPAddr fake_ip_for_id(CSteamID id, int idx)
+    {
+        SteamNetworkingIPAddr addr;
+        addr.Clear();
+        addr.SetIPv4( (169u << 24) | (254u << 16) | (((id.GetAccountID() >> 16) & 0xffu) << 8) | (id.GetAccountID() & 0xffu), BASE_FAKE_UDP_PORT + (idx >= 0 ? idx : 0) );
+        return addr;
+    }
+
+    static CSteamID id_for_fake_ip(const SteamNetworkingIPAddr &addr)
+    {
+        uint32 ip = addr.GetIPv4();
+        if (!addr.IsIPv4() || ((ip >> 16) & 0xffffu) != ((169u << 8) | 254u)) return CSteamID();
+        uint32 acct = (((ip >> 8) & 0xffu) << 16) | (ip & 0xffu);
+        return CSteamID(acct, k_EUniversePublic, k_EAccountTypeIndividual);
+    }
+
+    void DestroyFakeUDPPort() override
+    {
+        PRINT_DEBUG("Steam_Networking_FakeUDP_Port::DestroyFakeUDPPort\n");
+        destroyed = true;
+    }
+
+    EResult SendMessageToFakeIP( const SteamNetworkingIPAddr &remoteAddress, const void *pData, uint32 cbData, int nSendFlags ) override
+    {
+        PRINT_DEBUG("Steam_Networking_FakeUDP_Port::SendMessageToFakeIP\n");
+        if (destroyed) return k_EResultInvalidState;
+        SteamNetworkingIdentity identity;
+        identity.SetSteamID(id_for_fake_ip(remoteAddress));
+        if (identity.IsInvalid()) return k_EResultIPNotFound;
+        return networking_messages->SendMessageToUser(identity, pData, cbData, nSendFlags | k_nSteamNetworkingSend_UnreliableNoNagle, 0);
+    }
+
+    void ScheduleCleanup( const SteamNetworkingIPAddr &remoteAddress ) override
+    {
+        PRINT_DEBUG("Steam_Networking_FakeUDP_Port::ScheduleCleanup\n");
+    }
+
+    int ReceiveMessages( SteamNetworkingMessage_t **ppOutMessages, int nMaxMessages ) override
+    {
+        PRINT_DEBUG("Steam_Networking_FakeUDP_Port::ReceiveMessages\n");
+        if (destroyed) return 0;
+        return networking_messages->ReceiveMessagesOnChannel(0, ppOutMessages, nMaxMessages);
+    }
+
+    bool is_destroyed() { return destroyed; }
+    int port_index() { return idx_fake_server_port; }
+};
+
+
 class Steam_Networking_Sockets :
 public ISteamNetworkingSockets001,
 public ISteamNetworkingSockets002,
@@ -88,6 +163,10 @@ public ISteamNetworkingSockets
 
     struct shared_between_client_server *s;
     std::chrono::steady_clock::time_point created;
+    std::vector<std::pair<int, class Steam_Networking_FakeUDP_Port *>> fake_udp_ports;
+    bool fake_ip_reserved = false;
+    int fake_ip_num_ports = 0;
+    class Steam_Networking_Messages *messages_layer = NULL;
 
     static const int SNS_DISABLED_PORT = -1;
 
@@ -147,6 +226,11 @@ static unsigned long get_socket_id()
     static unsigned long socket_id;
     socket_id++;
     return socket_id;
+}
+
+void set_messages_layer(class Steam_Networking_Messages *messages)
+{
+    messages_layer = messages;
 }
 
 shared_between_client_server *get_shared_between_client_server()
@@ -1930,8 +2014,21 @@ void ResetIdentity( const SteamNetworkingIdentity *pIdentity )
 /// use CreateFakeUDPPort.
 bool BeginAsyncRequestFakeIP( int nNumPorts )
 {
-    PRINT_DEBUG("TODO: %s\n", __FUNCTION__);
-    return false;
+    PRINT_DEBUG("BeginAsyncRequestFakeIP %i\n", nNumPorts);
+    if (nNumPorts <= 0) return false;
+    std::lock_guard<std::recursive_mutex> lock(global_mutex);
+    fake_ip_reserved = true;
+    fake_ip_num_ports = nNumPorts;
+
+    SteamNetworkingFakeIPResult_t data = {};
+    data.m_eResult = k_EResultOK;
+    data.m_identity.SetSteamID(settings->get_local_steam_id());
+    for (int i = 0; i < nNumPorts && i < (int)sizeof(data.m_unPorts)/sizeof(data.m_unPorts[0]); ++i) {
+        data.m_unPorts[i] = Steam_Networking_FakeUDP_Port::fake_ip_for_id(settings->get_local_steam_id(), i).m_port;
+        if (i == 0) data.m_unIP = Steam_Networking_FakeUDP_Port::fake_ip_for_id(settings->get_local_steam_id(), i).GetIPv4();
+    }
+    callbacks->addCBResult(data.k_iCallback, &data, sizeof(data), 0.01);
+    return true;
 }
 
 /// Return info about the FakeIP and port(s) that we have been assigned,
@@ -1939,7 +2036,15 @@ bool BeginAsyncRequestFakeIP( int nNumPorts )
 /// Make sure and check SteamNetworkingFakeIPResult_t::m_eResult
 void GetFakeIP( int idxFirstPort, SteamNetworkingFakeIPResult_t *pInfo )
 {
-    PRINT_DEBUG("TODO: %s\n", __FUNCTION__);
+    PRINT_DEBUG("GetFakeIP %i\n", idxFirstPort);
+    std::lock_guard<std::recursive_mutex> lock(global_mutex);
+    if (!pInfo) return;
+    pInfo->m_eResult = fake_ip_reserved ? k_EResultOK : k_EResultPending;
+    pInfo->m_identity.SetSteamID(settings->get_local_steam_id());
+    for (int i = 0; i < fake_ip_num_ports && i < (int)sizeof(pInfo->m_unPorts)/sizeof(pInfo->m_unPorts[0]); ++i) {
+        pInfo->m_unPorts[i] = Steam_Networking_FakeUDP_Port::fake_ip_for_id(settings->get_local_steam_id(), i).m_port;
+        if (i == 0) pInfo->m_unIP = Steam_Networking_FakeUDP_Port::fake_ip_for_id(settings->get_local_steam_id(), i).GetIPv4();
+    }
 }
 
 /// Create a listen socket that will listen for P2P connections sent
@@ -1995,10 +2100,26 @@ EResult GetRemoteFakeIPForConnection( HSteamNetConnection hConn, SteamNetworking
 /// pass -1.  In this case, a distinct object will be returned for each call.
 /// When the peer receives packets sent from this interface, the peer will
 /// assign a FakeIP from its own locally-controlled namespace.
+
 ISteamNetworkingFakeUDPPort *CreateFakeUDPPort( int idxFakeServerPort )
 {
-    PRINT_DEBUG("TODO: %s\n", __FUNCTION__);
-    return NULL;
+    PRINT_DEBUG("CreateFakeUDPPort %i\n", idxFakeServerPort);
+    std::lock_guard<std::recursive_mutex> lock(global_mutex);
+
+    if (idxFakeServerPort >= 0) {
+        // server ports: same object returned for repeated calls, like real Steam
+        for (auto &port : fake_udp_ports) {
+            if (port.first == idxFakeServerPort && !port.second->is_destroyed()) {
+                return port.second;
+            }
+        }
+    }
+
+    Steam_Networking_FakeUDP_Port *port = new Steam_Networking_FakeUDP_Port(messages_layer, settings->get_local_steam_id(), idxFakeServerPort);
+    if (idxFakeServerPort >= 0) {
+        fake_udp_ports.push_back(std::make_pair(idxFakeServerPort, port));
+    }
+    return port;
 }
 
 // TEMP KLUDGE Call to invoke all queued callbacks.

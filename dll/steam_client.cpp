@@ -114,6 +114,8 @@ Steam_Client::Steam_Client()
     steam_gameserver_networking_sockets = new Steam_Networking_Sockets(settings_server, network, callback_results_server, callbacks_server, run_every_runcb, steam_networking_sockets->get_shared_between_client_server());
     steam_gameserver_networking_sockets_serialized = new Steam_Networking_Sockets_Serialized(settings_server, network, callback_results_server, callbacks_server, run_every_runcb);
     steam_gameserver_networking_messages = new Steam_Networking_Messages(settings_server, network, callback_results_server, callbacks_server, run_every_runcb);
+    steam_networking_sockets->set_messages_layer(steam_networking_messages);
+    steam_gameserver_networking_sockets->set_messages_layer(steam_gameserver_networking_messages);
     steam_gameserver_game_coordinator = new Steam_Game_Coordinator(settings_server, network, callback_results_server, callbacks_server, run_every_runcb);
     steam_masterserver_updater = new Steam_Masterserver_Updater(settings_server, network, callback_results_server, callbacks_server, run_every_runcb);
 
