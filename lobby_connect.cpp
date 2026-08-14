@@ -18,8 +18,10 @@
 /*
 */
 
-#include "sdk_includes/steam_api.h"
+// common_includes.h must come first so that the steam_api declarations are
+// compiled with STEAM_API_EXPORTS (this executable embeds its own emulator).
 #include "dll/common_includes.h"
+#include "sdk_includes/steam_api.h"
 
 #include <iostream>
 #include <chrono>
@@ -32,6 +34,13 @@
 #else
 
 #endif
+
+// Declarations normally provided by the SDK's inline accessors, which are
+// disabled in this build (STEAM_API_EXPORTS). The definitions come from the
+// embedded emulator (dll.cpp).
+extern "C" steam_bool SteamAPI_Init();
+extern "C" ISteamFriends *SteamFriends();
+
 int main() {
     if (SteamAPI_Init()) {
         //Set appid to: LOBBY_CONNECT_APPID

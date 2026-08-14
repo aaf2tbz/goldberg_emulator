@@ -187,6 +187,15 @@ inline std::string ascii_to_lowercase(std::string data) {
   return data;
 }
 
+// Convert a path string to a UTF-8 string usable with fstream. MSVC accepts wide
+// strings directly; mingw's libstdc++ does not, so always convert explicitly.
+#if defined(__WINDOWS__)
+inline std::string path_to_utf8(const std::wstring &wstr) { return utf8_encode(wstr); }
+inline std::string path_to_utf8(const std::string &s) { return s; }
+#else
+inline std::string path_to_utf8(const std::string &s) { return s; }
+#endif
+
 // Other libs includes
 #include "../controller/gamepad.h"
 #include "../json/json.hpp"

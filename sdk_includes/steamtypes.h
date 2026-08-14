@@ -100,7 +100,7 @@ const AccountID_t k_uAccountIdInvalid = 0;
 typedef uint64 SiteId_t;
 const SiteId_t k_ulSiteIdInvalid = 0;
 
-#if defined(_WIN32) && defined(__GNUC__) && !defined(_S4N_)
+#if defined(_WIN32) && defined(__GNUC__) && !defined(_S4N_) && !defined(STEAM_API_EXPORTS)
 	#define STEAMWORKS_STRUCT_RETURN_0(returnType, functionName)	\
 		virtual void functionName( returnType& ret ) = 0;			\
 		inline returnType functionName()							\

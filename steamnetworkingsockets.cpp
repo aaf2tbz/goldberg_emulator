@@ -1,6 +1,14 @@
+// The emulator exports its own accessor functions; skip the inline
+// accessor definitions from the SDK headers.
+#define STEAM_API_EXPORTS
+
 #include <stdio.h>
 #define NETWORKSOCKETS_DLL
 #define STEAM_API_EXPORTS
+// This library exports its own SteamNetworkingSockets()/SteamNetworkingUtils()
+// accessors; skip the inline accessor definitions from the SDK headers.
+#define STEAMNETWORKINGSOCKETS_STEAMAPI
+#define STEAMNETWORKINGSOCKETS_STANDALONELIB
 #include "sdk_includes/steam_gameserver.h"
 
 #if defined(WIN32) || defined(_WIN32)

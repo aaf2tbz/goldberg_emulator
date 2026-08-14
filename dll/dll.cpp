@@ -46,7 +46,7 @@ static char old_masterserver_updater[128] = "SteamMasterServerUpdater001";
 
 static bool try_load_steam_interfaces(std::string interfaces_path)
 {
-    std::ifstream input( utf8_decode(interfaces_path) );
+    std::ifstream input( path_to_utf8(utf8_decode(interfaces_path)) );
     if (!input.is_open()) {
         return false;
     }

@@ -30,7 +30,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 if (APPLE)
 	set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+endif()
+
+if (APPLE OR (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "GNU"))
 	set(protobuf_BUILD_TESTS CACHE BOOL OFF FORCE)
+	set(protobuf_BUILD_LIBPROTOC CACHE BOOL OFF FORCE)
+	set(protobuf_BUILD_PROTOC_BINARIES CACHE BOOL OFF FORCE)
 
 	include(FetchContent)
 	set(FetchContent_Quiet CACHE BOOL OFF FORCE)
@@ -60,7 +65,14 @@ include(FindProtobuf)
 find_package(Protobuf 3.1.0 REQUIRED)
 
 # Generate the .h and .cxx files for dll/net.proto
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS dll/net.proto)
+if (WIN32 AND CMAKE_CROSSCOMPILING)
+	# Cross builds (mingw) use the generated files checked into the repository,
+	# generated with protoc 23.1.
+	set(PROTO_SRCS dll/net.pb.cc)
+	set(PROTO_HDRS dll/net.pb.h)
+else()
+	protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS dll/net.proto)
+endif()
 
 # Print path to generated files
 message(STATUS "PROTO_SRCS = ${PROTO_SRCS}")

@@ -515,7 +515,7 @@ int Local_Storage::store_file_data(std::string folder, std::string file, char *d
 
     create_directory(folder + file_folder);
     std::ofstream myfile;
-    myfile.open(utf8_decode(folder + file), std::ios::binary | std::ios::out);
+    myfile.open(path_to_utf8(utf8_decode(folder + file)), std::ios::binary | std::ios::out);
     if (!myfile.is_open()) return -1;
     myfile.write(data, length);
     int position = myfile.tellp();
@@ -564,7 +564,7 @@ int Local_Storage::store_data_settings(std::string file, char *data, unsigned in
 int Local_Storage::get_file_data(std::string full_path, char *data, unsigned int max_length, unsigned int offset)
 {
     std::ifstream myfile;
-    myfile.open(utf8_decode(full_path), std::ios::binary | std::ios::in);
+    myfile.open(path_to_utf8(utf8_decode(full_path)), std::ios::binary | std::ios::in);
     if (!myfile.is_open()) return -1;
 
     myfile.seekg (offset, std::ios::beg);
@@ -702,7 +702,7 @@ bool Local_Storage::update_save_filenames(std::string folder)
 
 bool Local_Storage::load_json(std::string full_path, nlohmann::json& json)
 {
-    std::ifstream inventory_file(utf8_decode(full_path));
+    std::ifstream inventory_file(path_to_utf8(utf8_decode(full_path)));
     // If there is a file and we opened it
     if (inventory_file)
     {
@@ -753,7 +753,7 @@ bool Local_Storage::write_json_file(std::string folder, std::string const&file, 
 
     create_directory(inv_path);
 
-    std::ofstream inventory_file(utf8_decode(full_path), std::ios::trunc | std::ios::out);
+    std::ofstream inventory_file(path_to_utf8(utf8_decode(full_path)), std::ios::trunc | std::ios::out);
     if (inventory_file)
     {
         inventory_file << std::setw(2) << json;

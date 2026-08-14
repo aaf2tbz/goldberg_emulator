@@ -293,8 +293,13 @@ bool file_exists_(std::string full_path)
     if (_wstat(utf8_decode(full_path).c_str(), &buffer) != 0)
         return false;
 
+#if defined(_S_IFDIR)
     if ( buffer.st_mode & _S_IFDIR)
         return false;
+#elif defined(__MINGW32__) || defined(__MINGW64__)
+    if ( (buffer.st_mode & 0170000) == 0040000 ) // mingw lacks _S_IFDIR/S_ISDIR
+        return false;
+#endif
 #else
     struct stat buffer;
     if (stat(full_path.c_str(), &buffer) != 0)
