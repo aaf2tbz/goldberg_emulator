@@ -619,6 +619,8 @@ void *Steam_Client::GetISteamGenericInterface( HSteamUser hSteamUser, HSteamPipe
         return (void *)(ISteamGameCoordinator *)steam_game_coordinator_temp;
     } else if (strstr(pchVersion, STEAMTV_INTERFACE_VERSION) == pchVersion) {
         return (void *)(ISteamTV *)steam_tv;
+    } else if (strstr(pchVersion, STEAMTIMELINE_INTERFACE_VERSION) == pchVersion) {
+        return (void *)(ISteamTimeline *)steam_timeline;
     } else if (strstr(pchVersion, "SteamNetworkingUtils") == pchVersion) {
             if (strcmp(pchVersion, "SteamNetworkingUtils001") == 0) {
                 return (void *)(ISteamNetworkingUtils001 *)steam_networking_utils;
